@@ -14,7 +14,6 @@ The system helps organize the transplant waiting list and supports the matching 
 
 - **Organs:** Stores information about donated organs, including organ type, availability date, and status (available, reserved, or transplanted).
 
-- **Transplants:** Records the association between a candidate and an organ, including the transplant date, status, and compatibility score calculated by the system.
 
 ## Main Business Rules
 
