@@ -7,8 +7,8 @@ import com.lifematch.model.Candidate;
 
 public class CandidateRepository {
 
-    private final List<Candidate> candidates = new ArrayList<>();
-    private int nextId = 1;
+    private static final List<Candidate> candidates = new ArrayList<>();
+    private static int nextId = 1;
 
     public Candidate save(Candidate candidate) {
         candidate.setId(nextId++);

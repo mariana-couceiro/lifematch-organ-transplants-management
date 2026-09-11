@@ -1,0 +1,27 @@
+info:
+  name: candidate id4
+  type: http
+  seq: 1
+
+http:
+  method: DELETE
+  url: http://localhost:8080/lifematch/api/candidates/4
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Mariana Couceiro",
+        "birthDate": "2000-05-10",
+        "bloodType": "A+",
+        "requiredOrgan": "Kidney",
+        "priority": 3,
+        "waitingListEntryDate": "2026-09-11",
+        "status": "WAITING"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

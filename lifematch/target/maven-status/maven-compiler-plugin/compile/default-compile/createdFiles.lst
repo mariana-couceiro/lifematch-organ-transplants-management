@@ -1,0 +1,5 @@
+com/lifematch/controller/CandidateController.class
+com/lifematch/repository/CandidateRepository.class
+com/lifematch/model/Candidate.class
+com/lifematch/RestApplication.class
+com/lifematch/service/CandidateService.class

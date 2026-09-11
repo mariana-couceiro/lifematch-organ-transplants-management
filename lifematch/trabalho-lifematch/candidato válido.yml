@@ -1,0 +1,26 @@
+info:
+  name: candidato válido
+  type: http
+
+http:
+  method: POST
+  url: http://localhost:8080/lifematch/api/candidates
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Ana",
+        "birthDate": "1998-03-15",
+        "bloodType": "O+",
+        "requiredOrgan": "Kidney",
+        "priority": 2,
+        "waitingListEntryDate": "2026-09-11",
+        "status": "WAITING"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

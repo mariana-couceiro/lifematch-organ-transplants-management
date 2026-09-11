@@ -1,0 +1,26 @@
+info:
+  name: grupo sanguineo inválido
+  type: http
+
+http:
+  method: POST
+  url: http://localhost:8080/lifematch/api/candidates
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Teste",
+        "birthDate": "2000-05-10",
+        "bloodType": "X+",
+        "requiredOrgan": "Kidney",
+        "priority": 3,
+        "waitingListEntryDate": "2026-09-11",
+        "status": "WAITING"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
