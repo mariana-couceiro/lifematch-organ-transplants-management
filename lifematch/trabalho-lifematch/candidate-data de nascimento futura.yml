@@ -1,6 +1,7 @@
 info:
-  name: nome vazio
+  name: candidate-data de nascimento futura
   type: http
+  seq: 1
 
 http:
   method: POST
@@ -9,8 +10,8 @@ http:
     type: json
     data: |-
       {
-        "name": "",
-        "birthDate": "2000-05-10",
+        "name": "Teste",
+        "birthDate": "2030-05-10",
         "bloodType": "A+",
         "requiredOrgan": "Kidney",
         "priority": 3,

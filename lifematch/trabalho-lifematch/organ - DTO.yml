@@ -1,0 +1,26 @@
+info:
+  name: organ - DTO
+  type: http
+
+http:
+  method: POST
+  url: http://localhost:8080/lifematch/api/organs
+  body:
+    type: json
+    data: |-
+      {
+        "type": "Kidney",
+        "bloodType": "A+",
+        "donorName": "João Silva",
+        "donorBirthDate": "1985-04-12",
+        "hospital": "Hospital de Santa Maria",
+        "availabilityDate": "2026-09-16",
+        "status": "AVAILABLE"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

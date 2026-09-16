@@ -1,6 +1,7 @@
 info:
-  name: prioridade deve estar entre 1 e 4 testada
+  name: candidate-prioridade deve estar entre 1 e 4 testada
   type: http
+  seq: 1
 
 http:
   method: POST

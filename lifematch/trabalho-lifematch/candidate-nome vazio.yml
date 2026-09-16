@@ -1,6 +1,7 @@
 info:
-  name: grupo sanguineo inválido
+  name: candidate-nome vazio
   type: http
+  seq: 1
 
 http:
   method: POST
@@ -9,9 +10,9 @@ http:
     type: json
     data: |-
       {
-        "name": "Teste",
+        "name": "",
         "birthDate": "2000-05-10",
-        "bloodType": "X+",
+        "bloodType": "A+",
         "requiredOrgan": "Kidney",
         "priority": 3,
         "waitingListEntryDate": "2026-09-11",

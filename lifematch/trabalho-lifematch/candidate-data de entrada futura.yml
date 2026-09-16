@@ -1,6 +1,7 @@
 info:
-  name: data de nascimento futura
+  name: candidate-data de entrada futura
   type: http
+  seq: 1
 
 http:
   method: POST
@@ -10,11 +11,11 @@ http:
     data: |-
       {
         "name": "Teste",
-        "birthDate": "2030-05-10",
+        "birthDate": "2000-05-10",
         "bloodType": "A+",
         "requiredOrgan": "Kidney",
-        "priority": 3,
-        "waitingListEntryDate": "2026-09-11",
+        "priority": 4,
+        "waitingListEntryDate": "2026-09-17",
         "status": "WAITING"
       }
   auth: inherit

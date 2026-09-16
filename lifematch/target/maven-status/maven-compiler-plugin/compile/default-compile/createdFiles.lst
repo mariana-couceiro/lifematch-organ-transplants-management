@@ -1,5 +1,10 @@
-com/lifematch/controller/CandidateController.class
-com/lifematch/repository/CandidateRepository.class
-com/lifematch/model/Candidate.class
+com/lifematch/repository/OrganRepository.class
+com/lifematch/service/OrganService.class
+com/lifematch/controller/OrganController.class
+com/lifematch/dto/OrganResponse.class
 com/lifematch/RestApplication.class
 com/lifematch/service/CandidateService.class
+com/lifematch/controller/CandidateController.class
+com/lifematch/model/Organ.class
+com/lifematch/repository/CandidateRepository.class
+com/lifematch/model/Candidate.class

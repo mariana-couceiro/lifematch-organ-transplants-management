@@ -1,0 +1,27 @@
+info:
+  name: organ-status invalido
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8080/lifematch/api/organs
+  body:
+    type: json
+    data: |-
+      {
+        "type": "Kidney",
+        "bloodType": "A+",
+        "donorName": "Ana Silva",
+        "donorBirthDate": "1980-05-20",
+        "hospital": "Hospital de Santa Maria",
+        "availabilityDate": "2026-09-16",
+        "status": "TRANSPLANTED"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

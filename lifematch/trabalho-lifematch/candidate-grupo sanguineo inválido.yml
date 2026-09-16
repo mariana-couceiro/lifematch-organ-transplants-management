@@ -1,6 +1,7 @@
 info:
-  name: data de entrada futura
+  name: candidate-grupo sanguineo inválido
   type: http
+  seq: 1
 
 http:
   method: POST
@@ -11,10 +12,10 @@ http:
       {
         "name": "Teste",
         "birthDate": "2000-05-10",
-        "bloodType": "A+",
+        "bloodType": "X+",
         "requiredOrgan": "Kidney",
-        "priority": 4,
-        "waitingListEntryDate": "2026-09-17",
+        "priority": 3,
+        "waitingListEntryDate": "2026-09-11",
         "status": "WAITING"
       }
   auth: inherit

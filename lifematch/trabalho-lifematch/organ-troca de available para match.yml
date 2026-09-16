@@ -1,0 +1,26 @@
+info:
+  name: organ-troca de available para match
+  type: http
+
+http:
+  method: PUT
+  url: http://localhost:8080/lifematch/api/organs/1
+  body:
+    type: json
+    data: |-
+      {
+        "type": "Kidney",
+        "bloodType": "A+",
+        "donorName": "João Silva",
+        "donorBirthDate": "1985-04-12",
+        "hospital": "Hospital de Santa Maria",
+        "availabilityDate": "2026-09-16",
+        "status": "MATCHED"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
