@@ -15,63 +15,84 @@ public class CandidateService {
     }
 
     public Candidate createCandidate(Candidate candidate) {
+
         validateCandidate(candidate);
+
         return repository.save(candidate);
     }
 
     public List<Candidate> getAllCandidates() {
+
         return repository.findAll();
     }
 
+    public List<Candidate> getCandidatesByName(String name) {
+
+        return repository.findByName(name);
+    }
+
     public Candidate getCandidateById(int id) {
+
         return repository.findById(id);
     }
 
-    public Candidate updateCandidate(int id, Candidate candidate) {
+    public Candidate updateCandidate(
+            int id,
+            Candidate candidate) {
+
         validateCandidate(candidate);
+
         return repository.update(id, candidate);
     }
 
     public boolean deleteCandidate(int id) {
+
         return repository.delete(id);
     }
 
     private void validateCandidate(Candidate candidate) {
 
-        if (candidate.getName() == null || candidate.getName().isBlank()) {
+        if (candidate.getName() == null ||
+            candidate.getName().isBlank()) {
+
             throw new IllegalArgumentException(
                     "Candidate name is required."
             );
         }
 
         if (candidate.getBirthDate() == null) {
+
             throw new IllegalArgumentException(
                     "Birth date is required."
             );
         }
 
-        if (candidate.getBirthDate().isAfter(LocalDate.now())) {
+        if (candidate.getBirthDate()
+                .isAfter(LocalDate.now())) {
+
             throw new IllegalArgumentException(
                     "Birth date cannot be in the future."
             );
         }
 
         if (candidate.getBloodType() == null ||
-                candidate.getBloodType().isBlank()) {
+            candidate.getBloodType().isBlank()) {
 
             throw new IllegalArgumentException(
                     "Blood type is required."
             );
         }
 
-        if (!isValidBloodType(candidate.getBloodType())) {
+        if (!isValidBloodType(
+                candidate.getBloodType())) {
+
             throw new IllegalArgumentException(
                     "Invalid blood type."
             );
         }
 
         if (candidate.getRequiredOrgan() == null ||
-                candidate.getRequiredOrgan().isBlank()) {
+            candidate.getRequiredOrgan().isBlank()) {
 
             throw new IllegalArgumentException(
                     "Required organ is required."
@@ -79,7 +100,7 @@ public class CandidateService {
         }
 
         if (candidate.getPriority() < 1 ||
-                candidate.getPriority() > 4) {
+            candidate.getPriority() > 4) {
 
             throw new IllegalArgumentException(
                     "Priority must be between 1 and 4."
@@ -87,6 +108,7 @@ public class CandidateService {
         }
 
         if (candidate.getWaitingListEntryDate() == null) {
+
             throw new IllegalArgumentException(
                     "Waiting list entry date is required."
             );

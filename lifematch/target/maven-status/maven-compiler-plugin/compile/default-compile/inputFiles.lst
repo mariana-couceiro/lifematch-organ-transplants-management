@@ -1,10 +1,16 @@
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/RestApplication.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/controller/CandidateController.java
+/Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/controller/CorrespondenceController.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/controller/OrganController.java
+/Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/dto/CancellationRequest.java
+/Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/dto/CandidateMatchResponse.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/dto/OrganResponse.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/model/Candidate.java
+/Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/model/Correspondence.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/model/Organ.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/repository/CandidateRepository.java
+/Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/repository/CorrespondenceRepository.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/repository/OrganRepository.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/service/CandidateService.java
+/Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/service/CorrespondenceService.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/service/OrganService.java

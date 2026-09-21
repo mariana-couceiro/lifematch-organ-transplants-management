@@ -1,0 +1,20 @@
+info:
+  name: correspondence-organ 1 cancelled com justificação
+  type: http
+
+http:
+  method: GET
+  url: http://localhost:8080/lifematch/api/correspondences/organ/1
+  body:
+    type: json
+    data: |-
+      {
+        "reason": "Candidate temporarily unavailable."
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

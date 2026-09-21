@@ -58,4 +58,20 @@ public class CandidateRepository {
         candidates.remove(candidate);
         return true;
     }
+    public List<Candidate> findByName(String name) {
+
+        List<Candidate> results = new ArrayList<>();
+
+        for (Candidate candidate : candidates) {
+
+            if (candidate.getName()
+                    .toLowerCase()
+                    .contains(name.toLowerCase())) {
+
+            results.add(candidate);
+            }
+        }
+
+    return results;
+    }
 }

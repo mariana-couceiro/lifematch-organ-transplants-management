@@ -13,6 +13,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -21,12 +22,16 @@ import jakarta.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class CandidateController {
 
-    private final CandidateService service = new CandidateService();
+    private final CandidateService service =
+            new CandidateService();
 
     @POST
     public Response createCandidate(Candidate candidate) {
+
         try {
-            Candidate createdCandidate = service.createCandidate(candidate);
+
+            Candidate createdCandidate =
+                    service.createCandidate(candidate);
 
             return Response
                     .status(Response.Status.CREATED)
@@ -43,24 +48,51 @@ public class CandidateController {
     }
 
     @GET
-    public List<Candidate> getAllCandidates() {
-        return service.getAllCandidates();
+    public Response getCandidates(
+            @QueryParam("name") String name) {
+
+        if (name != null && !name.isBlank()) {
+
+            List<Candidate> candidates =
+                    service.getCandidatesByName(name);
+
+            if (candidates.isEmpty()) {
+
+                return Response
+                        .status(Response.Status.NOT_FOUND)
+                        .entity("No candidates found.")
+                        .build();
+            }
+
+            return Response
+                    .ok(candidates)
+                    .build();
+        }
+
+        return Response
+                .ok(service.getAllCandidates())
+                .build();
     }
 
     @GET
     @Path("/{id}")
-    public Response getCandidateById(@PathParam("id") int id) {
+    public Response getCandidateById(
+            @PathParam("id") int id) {
 
-        Candidate candidate = service.getCandidateById(id);
+        Candidate candidate =
+                service.getCandidateById(id);
 
         if (candidate == null) {
+
             return Response
                     .status(Response.Status.NOT_FOUND)
                     .entity("Candidate not found.")
                     .build();
         }
 
-        return Response.ok(candidate).build();
+        return Response
+                .ok(candidate)
+                .build();
     }
 
     @PUT
@@ -75,13 +107,16 @@ public class CandidateController {
                     service.updateCandidate(id, candidate);
 
             if (updatedCandidate == null) {
+
                 return Response
                         .status(Response.Status.NOT_FOUND)
                         .entity("Candidate not found.")
                         .build();
             }
 
-            return Response.ok(updatedCandidate).build();
+            return Response
+                    .ok(updatedCandidate)
+                    .build();
 
         } catch (IllegalArgumentException e) {
 
@@ -94,11 +129,14 @@ public class CandidateController {
 
     @DELETE
     @Path("/{id}")
-    public Response deleteCandidate(@PathParam("id") int id) {
+    public Response deleteCandidate(
+            @PathParam("id") int id) {
 
-        boolean deleted = service.deleteCandidate(id);
+        boolean deleted =
+                service.deleteCandidate(id);
 
         if (!deleted) {
+
             return Response
                     .status(Response.Status.NOT_FOUND)
                     .entity("Candidate not found.")
