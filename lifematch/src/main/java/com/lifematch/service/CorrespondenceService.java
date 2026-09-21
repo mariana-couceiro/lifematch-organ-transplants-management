@@ -33,7 +33,8 @@ public class CorrespondenceService {
 
     public List<Candidate> findEligibleCandidates(int organId) {
 
-        Organ organ = organRepository.findById(organId);
+        Organ organ =
+                organRepository.findById(organId);
 
         if (organ == null) {
             throw new IllegalArgumentException(
@@ -143,7 +144,8 @@ public class CorrespondenceService {
         return ranking;
     }
 
-    public Correspondence createProposal(int organId) {
+    public Correspondence createProposal(
+            int organId) {
 
         Organ organ =
                 organRepository.findById(organId);
@@ -219,7 +221,7 @@ public class CorrespondenceService {
                 .equalsIgnoreCase("PENDING")) {
 
             throw new IllegalArgumentException(
-                "Correspondence is not pending."
+                    "Correspondence is not pending."
             );
         }
 
@@ -303,15 +305,29 @@ public class CorrespondenceService {
                         reason
                 );
 
-        return createProposal(
-                cancelled.getOrganId()
-        );
+        try {
+
+            return createProposal(
+                    cancelled.getOrganId()
+            );
+
+        } catch (IllegalArgumentException e) {
+
+            if (e.getMessage().equals(
+                    "No eligible candidates available.")) {
+
+                return cancelled;
+            }
+
+            throw e;
+        }
     }
 
     public List<Correspondence> getCorrespondencesByOrganId(
             int organId) {
 
-        Organ organ = organRepository.findById(organId);
+        Organ organ =
+                organRepository.findById(organId);
 
         if (organ == null) {
             throw new IllegalArgumentException(
@@ -319,7 +335,8 @@ public class CorrespondenceService {
             );
         }
 
-        return correspondenceRepository.findByOrganId(organId);
+        return correspondenceRepository
+                .findByOrganId(organId);
     }
 
     private boolean wasCandidateCancelled(
@@ -334,9 +351,9 @@ public class CorrespondenceService {
                 correspondences) {
 
             if (correspondence.getCandidateId()
-                    == candidateId &&
+                        == candidateId &&
                 correspondence.getStatus()
-                    .equalsIgnoreCase("CANCELLED")) {
+                        .equalsIgnoreCase("CANCELLED")) {
 
                 return true;
             }

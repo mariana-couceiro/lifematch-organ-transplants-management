@@ -16,6 +16,8 @@ public class CandidateService {
 
     public Candidate createCandidate(Candidate candidate) {
 
+        candidate.setStatus("WAITING");
+
         validateCandidate(candidate);
 
         return repository.save(candidate);
@@ -114,6 +116,21 @@ public class CandidateService {
             );
         }
 
+        if (candidate.getStatus() == null ||
+            candidate.getStatus().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Candidate status is required."
+            );
+        }
+
+        if (!isValidStatus(candidate.getStatus())) {
+
+            throw new IllegalArgumentException(
+                    "Invalid candidate status."
+            );
+        }
+
         if (candidate.getWaitingListEntryDate()
                 .isAfter(LocalDate.now())) {
 
@@ -133,5 +150,12 @@ public class CandidateService {
                 bloodType.equals("AB-") ||
                 bloodType.equals("0+") ||
                 bloodType.equals("0-");
+    }
+
+    private boolean isValidStatus(String status) {
+
+    return status.equals("WAITING") ||
+            status.equals("MATCHED") ||
+            status.equals("INACTIVE");
     }
 }
