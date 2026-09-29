@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+    <title>LifeMatch | Candidate</title>
+
+    <link rel="stylesheet"
+            href="../css/style.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo-container">
+            <img src="../images/logo-horizontal.png"
+                    alt="LifeMatch"
+                    class="logo">
+        </div>
+
+        <nav class="menu">
+            <a href="../index.html"
+                class="menu-item">
+                Dashboard
+            </a>
+
+            <a href="candidates.html"
+                class="menu-item active">
+                Candidates
+            </a>
+
+            <a href="organs.html"
+                class="menu-item">
+                Organs
+            </a>
+
+            <a href="correspondences.html"
+                class="menu-item">
+                Correspondences
+            </a>
+        </nav>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+            <h1 id="candidateFormTitle">
+                New Candidate
+            </h1>
+
+            <p>Candidate information</p>
+        </header>
+
+        <section class="content-section form-section">
+
+            <form id="candidateForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="name">
+                            Name
+                        </label>
+
+                        <input type="text"
+                                id="name"
+                                required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthDate">
+                            Birth Date
+                        </label>
+
+                        <input type="date"
+                                id="birthDate"
+                                required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bloodType">
+                            Blood Type
+                        </label>
+
+                        <select id="bloodType"
+                                required>
+                            <option value="">
+                                Select
+                            </option>
+                            <option>A+</option>
+                            <option>A-</option>
+                            <option>B+</option>
+                            <option>B-</option>
+                            <option>AB+</option>
+                            <option>AB-</option>
+                            <option>0+</option>
+                            <option>0-</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="requiredOrgan">
+                            Required Organ
+                        </label>
+
+                        <select id="requiredOrgan"
+                                required>
+                            <option value="">
+                                Select
+                            </option>
+                            <option>Kidney</option>
+                            <option>Liver</option>
+                            <option>Heart</option>
+                            <option>Lung</option>
+                            <option>Pancreas</option>
+                            <option>Small Intestine</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="urgency">
+                            Urgency
+                        </label>
+
+                        <select id="urgency" required>
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option value="LOW">
+                                Low
+                            </option>
+
+                            <option value="MODERATE">
+                                Moderate
+                            </option>
+
+                            <option value="HIGH">
+                                High
+                            </option>
+
+                            <option value="CRITICAL">
+                                Critical
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="waitingListEntryDate">
+                            Waiting List Entry Date
+                        </label>
+
+                        <input type="date"
+                                id="waitingListEntryDate"
+                                required>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <a href="candidates.html"
+                        class="button secondary-button">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="button primary-button">
+                        Save Candidate
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <script src="../js/candidate-form.js"></script>
+
+</body>
+
+</html>

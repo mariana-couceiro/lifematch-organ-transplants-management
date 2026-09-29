@@ -4,6 +4,8 @@
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/controller/OrganController.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/dto/CancellationRequest.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/dto/CandidateMatchResponse.java
+/Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/dto/CorrespondenceResponse.java
+/Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/dto/OrganEditResponse.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/dto/OrganResponse.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/model/Candidate.java
 /Users/marianacouceiro/jmd-java/lifematch-organ-transplants-management/lifematch/src/main/java/com/lifematch/model/Correspondence.java

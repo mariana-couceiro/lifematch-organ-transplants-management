@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.lifematch.dto.CancellationRequest;
 import com.lifematch.dto.CandidateMatchResponse;
-import com.lifematch.model.Correspondence;
+import com.lifematch.dto.CorrespondenceResponse;
 import com.lifematch.service.CorrespondenceService;
 
 import jakarta.ws.rs.Consumes;
@@ -13,6 +13,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -21,140 +22,179 @@ import jakarta.ws.rs.core.Response;
 @Consumes(MediaType.APPLICATION_JSON)
 public class CorrespondenceController {
 
-    private final CorrespondenceService service =
-            new CorrespondenceService();
+        private final CorrespondenceService service = new CorrespondenceService();
 
-    @GET
-    @Path("/organ/{organId}/ranking")
-    public Response getRanking(
-            @PathParam("organId") int organId) {
+        // GET CORRESPONDENCES
 
-        try {
+        @GET
+        public Response getCorrespondences(
+                        @QueryParam("organId") Integer organId,
 
-            List<CandidateMatchResponse> ranking =
-                    service.getRanking(organId);
+                        @QueryParam("candidateId") Integer candidateId) {
 
-            if (ranking.isEmpty()) {
+                // FILTER BY ORGAN
+                if (organId != null) {
+
+                        List<CorrespondenceResponse> correspondences = service
+                                        .getCorrespondencesByOrganId(
+                                                        organId);
+
+                        return Response
+                                        .ok(correspondences)
+                                        .build();
+                }
+
+                // FILTER BY CANDIDATE
+                if (candidateId != null) {
+
+                        List<CorrespondenceResponse> correspondences = service
+                                        .getCorrespondencesByCandidateId(
+                                                        candidateId);
+
+                        return Response
+                                        .ok(correspondences)
+                                        .build();
+                }
+
+                // NO FILTER -> GET ALL
+                List<CorrespondenceResponse> correspondences = service
+                                .getAllCorrespondences();
+
                 return Response
-                        .status(Response.Status.NOT_FOUND)
-                        .entity("No eligible candidates found.")
-                        .build();
-            }
-
-            return Response
-                    .ok(ranking)
-                    .build();
-
-        } catch (IllegalArgumentException e) {
-
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+                                .ok(correspondences)
+                                .build();
         }
-    }
 
-    @GET
-    @Path("/organ/{organId}")
-    public Response getCorrespondencesByOrgan(
-            @PathParam("organId") int organId) {
+        // GET CANDIDATE RANKING FOR ORGAN
 
-        try {
+        @GET
+        @Path("/organ/{organId}/ranking")
+        public Response getRanking(
+                        @PathParam("organId") int organId) {
 
-            List<Correspondence> correspondences =
-                    service.getCorrespondencesByOrganId(organId);
+                try {
 
-            return Response
-                    .ok(correspondences)
-                    .build();
+                        List<CandidateMatchResponse> ranking = service.getRanking(
+                                        organId);
 
-        } catch (IllegalArgumentException e) {
+                        if (ranking.isEmpty()) {
 
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+                                return Response
+                                                .status(
+                                                                Response.Status.NOT_FOUND)
+                                                .entity(
+                                                                "No eligible candidates found.")
+                                                .build();
+                        }
+
+                        return Response
+                                        .ok(ranking)
+                                        .build();
+
+                } catch (IllegalArgumentException e) {
+
+                        return Response
+                                        .status(
+                                                        Response.Status.BAD_REQUEST)
+                                        .entity(
+                                                        e.getMessage())
+                                        .build();
+                }
         }
-    }
 
-    @POST
-    @Path("/organ/{organId}/proposal")
-    public Response createProposal(
-            @PathParam("organId") int organId) {
+        // CREATE PROPOSAL
 
-        try {
+        @POST
+        @Path("/organ/{organId}/proposal")
+        public Response createProposal(
+                        @PathParam("organId") int organId) {
 
-            Correspondence correspondence =
-                    service.createProposal(organId);
+                try {
 
-            return Response
-                    .status(Response.Status.CREATED)
-                    .entity(correspondence)
-                    .build();
+                        CorrespondenceResponse correspondence = service.createProposal(
+                                        organId);
 
-        } catch (IllegalArgumentException e) {
+                        return Response
+                                        .status(
+                                                        Response.Status.CREATED)
+                                        .entity(
+                                                        correspondence)
+                                        .build();
 
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+                } catch (IllegalArgumentException e) {
+
+                        return Response
+                                        .status(
+                                                        Response.Status.BAD_REQUEST)
+                                        .entity(
+                                                        e.getMessage())
+                                        .build();
+                }
         }
-    }
 
-    @POST
-    @Path("/{id}/confirm")
-    public Response confirmProposal(
-            @PathParam("id") int id) {
+        // CONFIRM PROPOSAL
 
-        try {
+        @POST
+        @Path("/{id}/confirm")
+        public Response confirmProposal(
+                        @PathParam("id") int id) {
 
-            Correspondence correspondence =
-                    service.confirmProposal(id);
+                try {
 
-            return Response
-                    .ok(correspondence)
-                    .build();
+                        CorrespondenceResponse correspondence = service.confirmProposal(
+                                        id);
 
-        } catch (IllegalArgumentException e) {
+                        return Response
+                                        .ok(correspondence)
+                                        .build();
 
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+                } catch (IllegalArgumentException e) {
+
+                        return Response
+                                        .status(
+                                                        Response.Status.BAD_REQUEST)
+                                        .entity(
+                                                        e.getMessage())
+                                        .build();
+                }
         }
-    }
 
-    @POST
-    @Path("/{id}/cancel")
-    public Response cancelProposal(
-            @PathParam("id") int id,
-            CancellationRequest request) {
+        // CANCEL PROPOSAL
 
-        try {
+        @POST
+        @Path("/{id}/cancel")
+        public Response cancelProposal(
+                        @PathParam("id") int id,
+                        CancellationRequest request) {
 
-            if (request == null) {
-                return Response
-                        .status(Response.Status.BAD_REQUEST)
-                        .entity("Cancellation reason is required.")
-                        .build();
-            }
+                try {
 
-            Correspondence nextProposal =
-                    service.cancelAndCreateNext(
-                            id,
-                            request.reason()
-                    );
+                        if (request == null) {
 
-            return Response
-                    .ok(nextProposal)
-                    .build();
+                                return Response
+                                                .status(
+                                                                Response.Status.BAD_REQUEST)
+                                                .entity(
+                                                                "Cancellation reason is required.")
+                                                .build();
+                        }
 
-        } catch (IllegalArgumentException e) {
+                        CorrespondenceResponse correspondence = service.cancelAndCreateNext(
+                                        id,
+                                        request.reason());
 
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
+                        return Response
+                                        .ok(correspondence)
+                                        .build();
+
+                } catch (IllegalArgumentException e) {
+
+                        return Response
+                                        .status(
+                                                        Response.Status.BAD_REQUEST)
+                                        .entity(
+                                                        e.getMessage())
+                                        .build();
+                }
         }
-    }
 }

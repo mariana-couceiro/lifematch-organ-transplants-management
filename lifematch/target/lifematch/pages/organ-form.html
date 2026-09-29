@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+    <title>LifeMatch | Organ</title>
+
+    <link rel="stylesheet"
+            href="../css/style.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo-container">
+            <img src="../images/logo-horizontal.png"
+                    alt="LifeMatch"
+                    class="logo">
+        </div>
+
+        <nav class="menu">
+
+            <a href="../index.html"
+                class="menu-item">
+                Dashboard
+            </a>
+
+            <a href="candidates.html"
+                class="menu-item">
+                Candidates
+            </a>
+
+            <a href="organs.html"
+                class="menu-item active">
+                Organs
+            </a>
+
+            <a href="correspondences.html"
+                class="menu-item">
+                Correspondences
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+
+            <h1 id="organFormTitle">
+                New Organ
+            </h1>
+
+            <p>Organ and donor information</p>
+
+        </header>
+
+        <section class="content-section form-section">
+
+            <form id="organForm">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="type">
+                            Organ Type
+                        </label>
+
+                        <select id="type"
+                                required>
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option>Kidney</option>
+                            <option>Liver</option>
+                            <option>Heart</option>
+                            <option>Lung</option>
+                            <option>Pancreas</option>
+                            <option>Small Intestine</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="bloodType">
+                            Blood Type
+                        </label>
+
+                        <select id="bloodType"
+                                required>
+
+                            <option value="">
+                                Select
+                            </option>
+
+                            <option>A+</option>
+                            <option>A-</option>
+                            <option>B+</option>
+                            <option>B-</option>
+                            <option>AB+</option>
+                            <option>AB-</option>
+                            <option>0+</option>
+                            <option>0-</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="donorName">
+                            Donor Name
+                        </label>
+
+                        <input type="text"
+                                id="donorName"
+                                required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="donorBirthDate">
+                            Donor Birth Date
+                        </label>
+
+                        <input type="date"
+                                id="donorBirthDate"
+                                required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="hospital">
+                            Hospital
+                        </label>
+
+                        <input type="text"
+                                id="hospital"
+                                required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="availabilityDate">
+                            Availability Date
+                        </label>
+
+                        <input type="date"
+                                id="availabilityDate"
+                                required>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="status">
+                            Status
+                        </label>
+
+                        <select id="status"
+                                required>
+
+                            <option value="AVAILABLE">
+                                Available
+                            </option>
+
+                            <option value="INACTIVE">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+
+                    <a href="organs.html"
+                        class="button secondary-button">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="button primary-button">
+                        Create Organ
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <script src="../js/organ-form.js"></script>
+
+</body>
+
+</html>

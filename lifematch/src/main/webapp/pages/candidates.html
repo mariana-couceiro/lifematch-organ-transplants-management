@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+    <title>LifeMatch | Candidates</title>
+
+    <link rel="stylesheet"
+            href="../css/style.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="logo-container">
+            <img src="../images/logo-horizontal.png"
+                    alt="LifeMatch"
+                    class="logo">
+        </div>
+
+        <nav class="menu">
+
+            <a href="../index.html"
+                class="menu-item">
+                Dashboard
+            </a>
+
+            <a href="candidates.html"
+                class="menu-item active">
+                Candidates
+            </a>
+
+            <a href="organs.html"
+                class="menu-item">
+                Organs
+            </a>
+
+            <a href="correspondences.html"
+                class="menu-item">
+                Correspondences
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <main class="main-content">
+
+        <header class="page-header header-actions">
+
+            <div>
+                <h1>Candidates</h1>
+                <p>Manage waiting list candidates</p>
+            </div>
+
+            <a href="candidate-form.html"
+                class="button primary-button">
+                New Candidate
+            </a>
+
+        </header>
+
+        <section class="content-section">
+
+            <div class="search-container">
+
+                <input type="text"
+                        id="candidateSearch"
+                        placeholder="Search candidate by name">
+
+                <button id="searchCandidateButton"
+                        class="button secondary-button">
+                    Search
+                </button>
+
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Blood Type</th>
+                            <th>Required Organ</th>
+                            <th>Urgency</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="candidateTableBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="../js/candidates.js"></script>
+
+</body>
+
+</html>

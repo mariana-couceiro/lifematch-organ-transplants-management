@@ -7,46 +7,78 @@ import java.util.List;
 import com.lifematch.model.Candidate;
 import com.lifematch.repository.CandidateRepository;
 
+
 public class CandidateService {
 
     private final CandidateRepository repository;
 
+
     public CandidateService() {
-        this.repository = new CandidateRepository();
+
+        this.repository =
+                new CandidateRepository();
     }
 
 
-    public Candidate createCandidate(Candidate candidate) {
 
-        candidate.setStatus("WAITING");
+    public Candidate createCandidate(
+            Candidate candidate) {
 
-        validateCandidate(candidate);
-
-        candidate.setPriority(
-                calculatePriority(candidate)
+        // New candidates always start
+        // on the waiting list
+        candidate.setStatus(
+                "WAITING"
         );
 
-        return repository.save(candidate);
+
+        // Validate information first
+        validateCandidate(
+                candidate
+        );
+
+
+        // Priority is calculated
+        // automatically by the system
+        candidate.setPriority(
+                calculatePriority(
+                        candidate
+                )
+        );
+
+
+        return repository.save(
+                candidate
+        );
     }
 
 
-    public List<Candidate> getAllCandidates() {
+
+    public List<Candidate>
+            getAllCandidates() {
 
         return repository.findAll();
     }
 
 
-    public List<Candidate> getCandidatesByName(
-            String name) {
 
-        return repository.findByName(name);
+    public Candidate getCandidateById(
+            int id) {
+
+        return repository.findById(
+                id
+        );
     }
 
 
-    public Candidate getCandidateById(int id) {
+    public List<Candidate>
+            getCandidatesByName(
+                    String name) {
 
-        return repository.findById(id);
+        return repository.findByName(
+                name
+        );
     }
+
 
 
     public Candidate updateCandidate(
@@ -56,19 +88,42 @@ public class CandidateService {
         Candidate existingCandidate =
                 repository.findById(id);
 
+
         if (existingCandidate == null) {
+
             return null;
         }
 
+
+        /*
+         * The status is preserved.
+         *
+         * The user does not decide whether
+         * a candidate is WAITING or MATCHED
+         * through the edit form.
+         */
         candidate.setStatus(
                 existingCandidate.getStatus()
         );
 
-        validateCandidate(candidate);
 
-        candidate.setPriority(
-                calculatePriority(candidate)
+        // Validate updated information
+        validateCandidate(
+                candidate
         );
+
+
+        /*
+         * Recalculate priority because
+         * birth date, required organ or
+         * urgency may have changed.
+         */
+        candidate.setPriority(
+                calculatePriority(
+                        candidate
+                )
+        );
+
 
         return repository.update(
                 id,
@@ -77,10 +132,15 @@ public class CandidateService {
     }
 
 
-    public boolean deleteCandidate(int id) {
 
-        return repository.delete(id);
+    public boolean deleteCandidate(
+            int id) {
+
+        return repository.delete(
+                id
+        );
     }
+
 
 
     private int calculatePriority(
@@ -89,10 +149,11 @@ public class CandidateService {
         int score = 0;
 
 
-        int age = Period.between(
-                candidate.getBirthDate(),
-                LocalDate.now()
-        ).getYears();
+        int age =
+                Period.between(
+                        candidate.getBirthDate(),
+                        LocalDate.now()
+                ).getYears();
 
 
         if (age <= 17) {
@@ -109,13 +170,17 @@ public class CandidateService {
         }
 
 
-        switch (candidate.getRequiredOrgan()) {
+
+        switch (
+                candidate.getRequiredOrgan()
+        ) {
 
             case "Heart":
             case "Liver":
             case "Lung":
 
                 score += 3;
+
                 break;
 
 
@@ -124,57 +189,80 @@ public class CandidateService {
             case "Small Intestine":
 
                 score += 2;
+
                 break;
         }
 
 
-        // URGENCY
-        switch (candidate.getUrgency()) {
+
+        switch (
+                candidate.getUrgency()
+        ) {
 
             case "MODERATE":
 
                 score += 1;
+
                 break;
 
 
             case "HIGH":
 
                 score += 2;
+
                 break;
 
 
             case "CRITICAL":
 
                 score += 3;
+
                 break;
 
 
             case "LOW":
 
+                // LOW adds no points
+
                 break;
         }
 
 
-        // CONVERT SCORE TO PRIORITY
 
         if (score >= 7) {
+
             return 4;
         }
 
+
         if (score >= 5) {
+
             return 3;
         }
 
+
         if (score >= 3) {
+
             return 2;
         }
+
 
         return 1;
     }
 
 
+
     private void validateCandidate(
             Candidate candidate) {
+
+
+        if (candidate == null) {
+
+            throw new IllegalArgumentException(
+                    "Candidate data is required."
+            );
+        }
+
 
 
         if (candidate.getName() == null ||
@@ -186,7 +274,9 @@ public class CandidateService {
         }
 
 
-        if (candidate.getBirthDate() == null) {
+
+        if (candidate.getBirthDate()
+                == null) {
 
             throw new IllegalArgumentException(
                     "Birth date is required."
@@ -194,8 +284,11 @@ public class CandidateService {
         }
 
 
-        if (candidate.getBirthDate()
-                .isAfter(LocalDate.now())) {
+        if (candidate
+                .getBirthDate()
+                .isAfter(
+                        LocalDate.now()
+                )) {
 
             throw new IllegalArgumentException(
                     "Birth date cannot be in the future."
@@ -203,8 +296,11 @@ public class CandidateService {
         }
 
 
-        if (candidate.getBloodType() == null ||
-            candidate.getBloodType().isBlank()) {
+
+        if (candidate.getBloodType()
+                == null ||
+            candidate.getBloodType()
+                    .isBlank()) {
 
             throw new IllegalArgumentException(
                     "Blood type is required."
@@ -213,7 +309,8 @@ public class CandidateService {
 
 
         if (!isValidBloodType(
-                candidate.getBloodType())) {
+                candidate.getBloodType()
+        )) {
 
             throw new IllegalArgumentException(
                     "Invalid blood type."
@@ -221,8 +318,11 @@ public class CandidateService {
         }
 
 
-        if (candidate.getRequiredOrgan() == null ||
-            candidate.getRequiredOrgan().isBlank()) {
+
+        if (candidate.getRequiredOrgan()
+                == null ||
+            candidate.getRequiredOrgan()
+                    .isBlank()) {
 
             throw new IllegalArgumentException(
                     "Required organ is required."
@@ -231,7 +331,8 @@ public class CandidateService {
 
 
         if (!isValidOrgan(
-                candidate.getRequiredOrgan())) {
+                candidate.getRequiredOrgan()
+        )) {
 
             throw new IllegalArgumentException(
                     "Invalid required organ."
@@ -239,8 +340,11 @@ public class CandidateService {
         }
 
 
-        if (candidate.getUrgency() == null ||
-            candidate.getUrgency().isBlank()) {
+
+        if (candidate.getUrgency()
+                == null ||
+            candidate.getUrgency()
+                    .isBlank()) {
 
             throw new IllegalArgumentException(
                     "Urgency is required."
@@ -249,7 +353,8 @@ public class CandidateService {
 
 
         if (!isValidUrgency(
-                candidate.getUrgency())) {
+                candidate.getUrgency()
+        )) {
 
             throw new IllegalArgumentException(
                     "Invalid urgency."
@@ -257,7 +362,9 @@ public class CandidateService {
         }
 
 
-        if (candidate.getWaitingListEntryDate()
+
+        if (candidate
+                .getWaitingListEntryDate()
                 == null) {
 
             throw new IllegalArgumentException(
@@ -266,8 +373,11 @@ public class CandidateService {
         }
 
 
-        if (candidate.getWaitingListEntryDate()
-                .isAfter(LocalDate.now())) {
+        if (candidate
+                .getWaitingListEntryDate()
+                .isAfter(
+                        LocalDate.now()
+                )) {
 
             throw new IllegalArgumentException(
                     "Waiting list entry date cannot be in the future."
@@ -275,8 +385,11 @@ public class CandidateService {
         }
 
 
-        if (candidate.getStatus() == null ||
-            candidate.getStatus().isBlank()) {
+
+        if (candidate.getStatus()
+                == null ||
+            candidate.getStatus()
+                    .isBlank()) {
 
             throw new IllegalArgumentException(
                     "Candidate status is required."
@@ -285,13 +398,15 @@ public class CandidateService {
 
 
         if (!isValidStatus(
-                candidate.getStatus())) {
+                candidate.getStatus()
+        )) {
 
             throw new IllegalArgumentException(
                     "Invalid candidate status."
             );
         }
     }
+
 
 
     private boolean isValidBloodType(
@@ -308,6 +423,7 @@ public class CandidateService {
     }
 
 
+
     private boolean isValidOrgan(
             String organ) {
 
@@ -316,8 +432,11 @@ public class CandidateService {
                 organ.equals("Heart") ||
                 organ.equals("Lung") ||
                 organ.equals("Pancreas") ||
-                organ.equals("Small Intestine");
+                organ.equals(
+                        "Small Intestine"
+                );
     }
+
 
 
     private boolean isValidUrgency(
@@ -328,6 +447,7 @@ public class CandidateService {
                 urgency.equals("HIGH") ||
                 urgency.equals("CRITICAL");
     }
+
 
 
     private boolean isValidStatus(
