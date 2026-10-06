@@ -5,18 +5,28 @@ import java.time.Period;
 import java.util.List;
 
 import com.lifematch.model.Candidate;
+import com.lifematch.model.OrganType;
 import com.lifematch.repository.CandidateRepository;
+import com.lifematch.repository.OrganTypeRepository;
 
 public class CandidateService {
 
     private final CandidateRepository repository;
+    private final OrganTypeRepository organTypeRepository;
+
 
     public CandidateService() {
-        this.repository = new CandidateRepository();
+
+        this.repository =
+                new CandidateRepository();
+
+        this.organTypeRepository =
+                new OrganTypeRepository();
     }
 
 
-    public Candidate createCandidate(Candidate candidate) {
+    public Candidate createCandidate(
+            Candidate candidate) {
 
         candidate.setStatus("WAITING");
 
@@ -89,6 +99,7 @@ public class CandidateService {
         int score = 0;
 
 
+        // AGE
         int age = Period.between(
                 candidate.getBirthDate(),
                 LocalDate.now()
@@ -109,22 +120,15 @@ public class CandidateService {
         }
 
 
-        switch (candidate.getRequiredOrgan()) {
+        // ORGAN
+        OrganType organType =
+                organTypeRepository.findByName(
+                        candidate.getRequiredOrgan()
+                );
 
-            case "Heart":
-            case "Liver":
-            case "Lung":
+        if (organType != null) {
 
-                score += 3;
-                break;
-
-
-            case "Kidney":
-            case "Pancreas":
-            case "Small Intestine":
-
-                score += 2;
-                break;
+            score += organType.getPriorityPoints();
         }
 
 
@@ -156,7 +160,6 @@ public class CandidateService {
 
 
         // CONVERT SCORE TO PRIORITY
-
         if (score >= 7) {
             return 4;
         }
@@ -177,6 +180,7 @@ public class CandidateService {
             Candidate candidate) {
 
 
+        // NAME
         if (candidate.getName() == null ||
             candidate.getName().isBlank()) {
 
@@ -186,6 +190,7 @@ public class CandidateService {
         }
 
 
+        // BIRTH DATE
         if (candidate.getBirthDate() == null) {
 
             throw new IllegalArgumentException(
@@ -203,6 +208,7 @@ public class CandidateService {
         }
 
 
+        // BLOOD TYPE
         if (candidate.getBloodType() == null ||
             candidate.getBloodType().isBlank()) {
 
@@ -221,6 +227,7 @@ public class CandidateService {
         }
 
 
+        // REQUIRED ORGAN
         if (candidate.getRequiredOrgan() == null ||
             candidate.getRequiredOrgan().isBlank()) {
 
@@ -239,6 +246,7 @@ public class CandidateService {
         }
 
 
+        // URGENCY
         if (candidate.getUrgency() == null ||
             candidate.getUrgency().isBlank()) {
 
@@ -257,6 +265,7 @@ public class CandidateService {
         }
 
 
+        // WAITING LIST ENTRY DATE
         if (candidate.getWaitingListEntryDate()
                 == null) {
 
@@ -275,6 +284,7 @@ public class CandidateService {
         }
 
 
+        // STATUS
         if (candidate.getStatus() == null ||
             candidate.getStatus().isBlank()) {
 
@@ -311,12 +321,13 @@ public class CandidateService {
     private boolean isValidOrgan(
             String organ) {
 
-        return organ.equals("Kidney") ||
-                organ.equals("Liver") ||
-                organ.equals("Heart") ||
-                organ.equals("Lung") ||
-                organ.equals("Pancreas") ||
-                organ.equals("Small Intestine");
+        OrganType organType =
+                organTypeRepository.findByName(
+                        organ
+                );
+
+        return organType != null &&
+                organType.isActive();
     }
 
 

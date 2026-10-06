@@ -1,0 +1,22 @@
+info:
+  name: Organ Type test
+  type: http
+
+http:
+  method: POST
+  url: http://localhost:8080/lifematch/api/organ-types
+  body:
+    type: json
+    data: |-
+      {
+          "name": "Kidney",
+          "priorityPoints": 2,
+          "active": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

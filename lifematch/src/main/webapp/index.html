@@ -1,460 +1,153 @@
-package com.lifematch.service;
+<!DOCTYPE html>
+<html lang="en">
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.List;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-import com.lifematch.model.Candidate;
-import com.lifematch.repository.CandidateRepository;
+    <title>LifeMatch - Dashboard</title>
 
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-public class CandidateService {
+<body>
 
-    private final CandidateRepository repository;
+    <div class="sidebar">
 
+        <div class="logo-container">
+            <img
+                src="images/logo-horizontal.png"
+                alt="LifeMatch"
+                class="logo"
+            >
+        </div>
 
-    public CandidateService() {
+        <nav class="menu">
 
-        this.repository =
-                new CandidateRepository();
-    }
+            <a
+                href="index.html"
+                class="menu-item active"
+            >
+                Dashboard
+            </a>
 
+            <a
+                href="pages/candidates.html"
+                class="menu-item"
+            >
+                Candidates
+            </a>
 
+            <a
+                href="pages/organs.html"
+                class="menu-item"
+            >
+                Organs
+            </a>
 
-    public Candidate createCandidate(
-            Candidate candidate) {
+            <a
+                href="pages/correspondences.html"
+                class="menu-item"
+            >
+                Correspondences
+            </a>
 
-        // New candidates always start
-        // on the waiting list
-        candidate.setStatus(
-                "WAITING"
-        );
+        </nav>
 
+    </div>
 
-        // Validate information first
-        validateCandidate(
-                candidate
-        );
 
+    <main class="main-content">
 
-        // Priority is calculated
-        // automatically by the system
-        candidate.setPriority(
-                calculatePriority(
-                        candidate
-                )
-        );
+        <div class="page-header">
 
+            <div>
+                <h1>Dashboard</h1>
+                <p>Overview of the LifeMatch system</p>
+            </div>
 
-        return repository.save(
-                candidate
-        );
-    }
+        </div>
 
 
+        <div class="dashboard-cards">
 
-    public List<Candidate>
-            getAllCandidates() {
+            <div class="card">
 
-        return repository.findAll();
-    }
+                <p class="card-title">
+                    Waiting Candidates
+                </p>
 
+                <p
+                    class="card-number"
+                    id="candidateCount"
+                >
+                    0
+                </p>
 
+            </div>
 
-    public Candidate getCandidateById(
-            int id) {
 
-        return repository.findById(
-                id
-        );
-    }
+            <div class="card">
 
+                <p class="card-title">
+                    Correspondences
+                </p>
 
-    public List<Candidate>
-            getCandidatesByName(
-                    String name) {
+                <p
+                    class="card-number"
+                    id="correspondenceCount"
+                >
+                    0
+                </p>
 
-        return repository.findByName(
-                name
-        );
-    }
+            </div>
 
 
+            <div class="card">
 
-    public Candidate updateCandidate(
-            int id,
-            Candidate candidate) {
+                <p class="card-title">
+                    Match Success Rate
+                </p>
 
-        Candidate existingCandidate =
-                repository.findById(id);
+                <p
+                    class="card-number"
+                    id="successRate"
+                >
+                    0%
+                </p>
 
+            </div>
 
-        if (existingCandidate == null) {
+        </div>
 
-            return null;
-        }
 
+        <section class="content-section">
 
-        /*
-         * The status is preserved.
-         *
-         * The user does not decide whether
-         * a candidate is WAITING or MATCHED
-         * through the edit form.
-         */
-        candidate.setStatus(
-                existingCandidate.getStatus()
-        );
+            <div class="section-header">
 
+                <div>
+                    <h2>Recent Activity</h2>
+                    <p>Latest matching activity</p>
+                </div>
 
-        // Validate updated information
-        validateCandidate(
-                candidate
-        );
+            </div>
 
 
-        /*
-         * Recalculate priority because
-         * birth date, required organ or
-         * urgency may have changed.
-         */
-        candidate.setPriority(
-                calculatePriority(
-                        candidate
-                )
-        );
+            <div id="recentActivity">
 
+                <p class="empty-state">
+                    No recent activity.
+                </p>
 
-        return repository.update(
-                id,
-                candidate
-        );
-    }
+            </div>
 
+        </section>
 
+    </main>
 
-    public boolean deleteCandidate(
-            int id) {
 
-        return repository.delete(
-                id
-        );
-    }
+    <script src="js/dashboard.js"></script>
 
+</body>
 
-
-    private int calculatePriority(
-            Candidate candidate) {
-
-        int score = 0;
-
-
-        int age =
-                Period.between(
-                        candidate.getBirthDate(),
-                        LocalDate.now()
-                ).getYears();
-
-
-        if (age <= 17) {
-
-            score += 3;
-
-        } else if (age <= 39) {
-
-            score += 2;
-
-        } else if (age <= 64) {
-
-            score += 1;
-        }
-
-
-
-        switch (
-                candidate.getRequiredOrgan()
-        ) {
-
-            case "Heart":
-            case "Liver":
-            case "Lung":
-
-                score += 3;
-
-                break;
-
-
-            case "Kidney":
-            case "Pancreas":
-            case "Small Intestine":
-
-                score += 2;
-
-                break;
-        }
-
-
-
-        switch (
-                candidate.getUrgency()
-        ) {
-
-            case "MODERATE":
-
-                score += 1;
-
-                break;
-
-
-            case "HIGH":
-
-                score += 2;
-
-                break;
-
-
-            case "CRITICAL":
-
-                score += 3;
-
-                break;
-
-
-            case "LOW":
-
-                // LOW adds no points
-
-                break;
-        }
-
-
-
-        if (score >= 7) {
-
-            return 4;
-        }
-
-
-        if (score >= 5) {
-
-            return 3;
-        }
-
-
-        if (score >= 3) {
-
-            return 2;
-        }
-
-
-        return 1;
-    }
-
-
-
-    private void validateCandidate(
-            Candidate candidate) {
-
-
-        if (candidate == null) {
-
-            throw new IllegalArgumentException(
-                    "Candidate data is required."
-            );
-        }
-
-
-
-        if (candidate.getName() == null ||
-            candidate.getName().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Candidate name is required."
-            );
-        }
-
-
-
-        if (candidate.getBirthDate()
-                == null) {
-
-            throw new IllegalArgumentException(
-                    "Birth date is required."
-            );
-        }
-
-
-        if (candidate
-                .getBirthDate()
-                .isAfter(
-                        LocalDate.now()
-                )) {
-
-            throw new IllegalArgumentException(
-                    "Birth date cannot be in the future."
-            );
-        }
-
-
-
-        if (candidate.getBloodType()
-                == null ||
-            candidate.getBloodType()
-                    .isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Blood type is required."
-            );
-        }
-
-
-        if (!isValidBloodType(
-                candidate.getBloodType()
-        )) {
-
-            throw new IllegalArgumentException(
-                    "Invalid blood type."
-            );
-        }
-
-
-
-        if (candidate.getRequiredOrgan()
-                == null ||
-            candidate.getRequiredOrgan()
-                    .isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Required organ is required."
-            );
-        }
-
-
-        if (!isValidOrgan(
-                candidate.getRequiredOrgan()
-        )) {
-
-            throw new IllegalArgumentException(
-                    "Invalid required organ."
-            );
-        }
-
-
-
-        if (candidate.getUrgency()
-                == null ||
-            candidate.getUrgency()
-                    .isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Urgency is required."
-            );
-        }
-
-
-        if (!isValidUrgency(
-                candidate.getUrgency()
-        )) {
-
-            throw new IllegalArgumentException(
-                    "Invalid urgency."
-            );
-        }
-
-
-
-        if (candidate
-                .getWaitingListEntryDate()
-                == null) {
-
-            throw new IllegalArgumentException(
-                    "Waiting list entry date is required."
-            );
-        }
-
-
-        if (candidate
-                .getWaitingListEntryDate()
-                .isAfter(
-                        LocalDate.now()
-                )) {
-
-            throw new IllegalArgumentException(
-                    "Waiting list entry date cannot be in the future."
-            );
-        }
-
-
-
-        if (candidate.getStatus()
-                == null ||
-            candidate.getStatus()
-                    .isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Candidate status is required."
-            );
-        }
-
-
-        if (!isValidStatus(
-                candidate.getStatus()
-        )) {
-
-            throw new IllegalArgumentException(
-                    "Invalid candidate status."
-            );
-        }
-    }
-
-
-
-    private boolean isValidBloodType(
-            String bloodType) {
-
-        return bloodType.equals("A+") ||
-                bloodType.equals("A-") ||
-                bloodType.equals("B+") ||
-                bloodType.equals("B-") ||
-                bloodType.equals("AB+") ||
-                bloodType.equals("AB-") ||
-                bloodType.equals("0+") ||
-                bloodType.equals("0-");
-    }
-
-
-
-    private boolean isValidOrgan(
-            String organ) {
-
-        return organ.equals("Kidney") ||
-                organ.equals("Liver") ||
-                organ.equals("Heart") ||
-                organ.equals("Lung") ||
-                organ.equals("Pancreas") ||
-                organ.equals(
-                        "Small Intestine"
-                );
-    }
-
-
-
-    private boolean isValidUrgency(
-            String urgency) {
-
-        return urgency.equals("LOW") ||
-                urgency.equals("MODERATE") ||
-                urgency.equals("HIGH") ||
-                urgency.equals("CRITICAL");
-    }
-
-
-
-    private boolean isValidStatus(
-            String status) {
-
-        return status.equals("WAITING") ||
-                status.equals("MATCHED") ||
-                status.equals("INACTIVE");
-    }
-}
+</html>
