@@ -1,33 +1,213 @@
 # LifeMatch
 
-## Description
+**Making tomorrow possible**
 
-**LifeMatch** is an information system designed for the **simulated management of organ transplants**. It allows users to register and manage transplant candidates, donors, and available organs.
+LifeMatch is an academic information system for the **simulated management of organ transplant waiting lists and organ matching**.
 
-The system helps organize the transplant waiting list and supports the matching of available organs with eligible candidates. It uses **simulated compatibility and priority criteria** to rank candidates and identify the most suitable candidate for an available organ.
+The application manages candidates, organ types, available organs, correspondence proposals and users. It ranks eligible candidates using simulated priority criteria and supports the confirmation or cancellation of matching proposals.
 
-## Main Entities (Data Base)
+---
 
-- **Candidates:** Stores information about candidates on the transplant waiting list, such as identification, blood type, required organ, priority level, waiting list entry date, and status.
+## Technologies
 
-- **Donors:** Stores relevant donor information, including identification, blood type, and donation-related information.
+| Technology | Purpose |
+|---|---|
+| Java 21 | Application development |
+| Jakarta EE 10 | Enterprise application framework |
+| Jakarta REST | RESTful API |
+| Apache TomEE | Application server |
+| Maven | Build and dependency management |
+| JPA / OpenJPA | Object-relational persistence |
+| MySQL | Relational database |
+| BCrypt | Password hashing |
+| Bruno | API testing |
+| Git & GitHub | Version control |
 
-- **Organs:** Stores information about donated organs, including organ type, availability date, and status (available, reserved, or transplanted).
+---
+
+## Features
+
+- Candidate registration, management and automatic priority calculation
+- Organ type management with configurable priority points
+- Available organ registration and management
+- Candidate eligibility filtering and ranking
+- Automatic correspondence proposal generation
+- Proposal confirmation and cancellation with justification
+- Correspondence history
+- User management with ADMIN and USER roles
+- HTTP session authentication and BCrypt password hashing
+- Persistent data storage using JPA and MySQL
+
+---
+
+## Business Rules
+
+### Candidate Eligibility
+
+A candidate is eligible for a simulated organ match when:
+
+1. The required organ type matches the available organ.
+2. The candidate and organ have the same blood type.
+3. The candidate has the `WAITING` status.
+4. The organ has the `AVAILABLE` status.
 
 
-## Main Business Rules
+### Automatic Priority
 
-The main business logic of **LifeMatch** is the **simulated matching and ranking of candidates for an available organ**.
+Candidate priority is calculated using:
 
-When a new organ is registered, the system searches for candidates who require that type of organ and checks their eligibility.
+- Candidate age
+- Priority points of the required organ type
+- Urgency level
 
-For each eligible candidate, the system calculates a **compatibility and priority score** based on simulated criteria such as:
+The calculated priority ranges from **1 to 4**, with 4 representing the highest priority.
 
-- Blood type compatibility;
-- Candidate priority level;
-- Time spent on the waiting list;
-- Match between the required organ and the available organ.
+### Candidate Ranking
 
-The candidates are then ranked according to their score, allowing the system to identify the candidate with the highest priority based on the defined rules.
+Eligible candidates receive a simulated score:
 
-When an organ is assigned to a candidate, the system updates the corresponding statuses and prevents the same organ from being assigned to more than one candidate at the same time. 
+```text
+Compatibility Score = (Candidate Priority × 10) + Completed Waiting Months
+```
+
+Candidates are ranked by descending score. In the event of a tie, the earlier waiting-list entry date takes precedence.
+
+### Correspondence Workflow
+
+```text
+Available Organ
+      |
+      v
+Find Eligible Candidates
+      |
+      v
+Calculate Scores and Ranking
+      |
+      v
+Create PENDING Proposal
+      |
+      +---- Confirm ----> SELECTED
+      |                    |
+      |                    +--> Candidate: MATCHED
+      |                    +--> Organ: MATCHED
+      |
+      +---- Cancel -----> CANCELLED
+                           |
+                           +--> Store Cancellation Reason
+                           +--> Try Next Eligible Candidate
+```
+
+The system avoids proposing the same organ again to candidates whose previous proposals for that organ were cancelled.
+
+A confirmed match does **not** represent a completed transplant.
+
+---
+
+## Authentication and Authorization
+
+LifeMatch uses HTTP sessions and BCrypt password hashing.
+
+| Role | Permissions |
+|---|---|
+| ADMIN | User management and administrative operations |
+| USER | Operations permitted to authenticated users |
+
+The application protects against deleting the currently authenticated administrator and removing the last administrator.
+
+An initial administrator is created automatically if the `admin` account does not already exist.
+
+The administrator password is supplied through the `LIFEMATCH_ADMIN_PASSWORD` environment variable.
+
+Passwords are never included in user response DTOs.
+
+---
+
+## REST API
+
+**Base URL**
+
+```text
+http://localhost:8080/lifematch/api
+```
+
+### Candidates
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/candidates` | Create a candidate |
+| GET | `/candidates` | List or filter candidates by name |
+| GET | `/candidates/{id}` | Get candidate by ID |
+| PUT | `/candidates/{id}` | Update candidate |
+| DELETE | `/candidates/{id}` | Delete candidate |
+
+### Organs
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/organs` | Register an organ |
+| GET | `/organs` | List organs |
+| GET | `/organs/{id}` | Get organ by ID |
+| PUT | `/organs/{id}` | Update organ |
+| DELETE | `/organs/{id}` | Delete organ |
+
+### Correspondences
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/correspondences` | List correspondence summaries |
+| GET | `/correspondences/history` | View full history (ADMIN) |
+| GET | `/correspondences/organ/{organId}/ranking` | View candidate ranking |
+| POST | `/correspondences/organ/{organId}/proposal` | Generate proposal |
+| POST | `/correspondences/{id}/confirm` | Confirm proposal |
+| POST | `/correspondences/{id}/cancel` | Cancel proposal with reason |
+
+### Users
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/users` | Create user (ADMIN) |
+| GET | `/users` | List users (ADMIN) |
+| GET | `/users/{id}` | Get user (ADMIN) |
+| PUT | `/users/{id}` | Update user (ADMIN) |
+| DELETE | `/users/{id}` | Delete user (ADMIN) |
+
+### Authentication
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/auth/login` | Log in |
+| GET | `/auth/me` | View current session |
+| POST | `/auth/logout` | Log out |
+
+Organ type management is also supported by the REST API.
+
+---
+
+## Project Status
+
+The following components have been implemented and tested:
+
+- [x] Candidate CRUD
+- [x] Organ type CRUD
+- [x] Organ CRUD
+- [x] Correspondence proposals and history
+- [x] Automatic candidate priority and ranking
+- [x] Proposal confirmation and cancellation
+- [x] User CRUD
+- [x] Authentication and authorization
+- [x] BCrypt password protection
+- [x] JPA and MySQL persistence
+- [x] Persistence after application restart
+
+### Future Improvements
+
+- [ ] Automated tests
+- [ ] Improved validation and error handling
+- [ ] Stronger session and authorization controls
+- [ ] Enhanced database constraints and relationships
+- [ ] Graphical user interface
+- [ ] More detailed simulated matching criteria
+
+---
+
+**LifeMatch — Making tomorrow possible.**
