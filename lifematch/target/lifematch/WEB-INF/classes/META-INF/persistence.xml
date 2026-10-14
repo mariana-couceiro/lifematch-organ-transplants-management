@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<persistence
+    xmlns="https://jakarta.ee/xml/ns/persistence"
+    version="3.0">
+
+    <persistence-unit
+        name="LifeMatchPU"
+        transaction-type="JTA">
+
+        <jta-data-source>java:comp/env/jdbc/LifeMatchDS</jta-data-source>
+
+        <!-- JPA ENTITIES -->
+        <class>com.lifematch.model.OrganType</class>
+        <class>com.lifematch.model.Organ</class>
+        <class>com.lifematch.model.Candidate</class>
+        <class>com.lifematch.model.Correspondence</class>
+        <class>com.lifematch.model.User</class>
+
+        <properties>
+
+            <!-- SQL statements in the TomEE console -->
+            <property
+                name="openjpa.Log"
+                value="SQL=TRACE"/>
+
+        </properties>
+
+    </persistence-unit>
+
+</persistence>

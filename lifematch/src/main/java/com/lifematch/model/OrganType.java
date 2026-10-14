@@ -1,10 +1,27 @@
 package com.lifematch.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+
+@Entity
+@Table(name = "organ_type")
 public class OrganType {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false, unique = true)
     private String name;
+
+    @Column(name = "priority_points", nullable = false)
     private int priorityPoints;
+
+    @Column(nullable = false)
     private boolean active;
 
 
@@ -45,9 +62,7 @@ public class OrganType {
         return priorityPoints;
     }
 
-    public void setPriorityPoints(
-            int priorityPoints) {
-
+    public void setPriorityPoints(int priorityPoints) {
         this.priorityPoints = priorityPoints;
     }
 
@@ -60,3 +75,4 @@ public class OrganType {
         this.active = active;
     }
 }
+

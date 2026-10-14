@@ -1,3 +1,5 @@
+/* GENERAL */
+
 * {
     margin: 0;
     padding: 0;
@@ -7,9 +9,7 @@
 body {
     min-height: 100vh;
     display: flex;
-
     font-family: Arial, Helvetica, sans-serif;
-
     background-color: #f6f8fa;
     color: #38536f;
 }
@@ -20,9 +20,10 @@ body {
 .sidebar {
     width: 260px;
     min-height: 100vh;
-
     padding: 12px 20px 30px;
-
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
     background-color: #ffffff;
     border-right: 1px solid #e4e8ec;
 }
@@ -50,15 +51,10 @@ body {
 
 .menu-item {
     padding: 14px 18px;
-
     border-radius: 8px;
-
     text-decoration: none;
-
     color: #68798a;
-
     font-size: 15px;
-
     transition: 0.2s;
 }
 
@@ -73,13 +69,64 @@ body {
     font-weight: bold;
 }
 
+.menu-section-title {
+    margin-top: 22px;
+    margin-bottom: 5px;
+    padding: 0 18px;
+    color: #a0aab3;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+
+/* SIDEBAR ACCOUNT */
+
+.sidebar-account {
+    margin-top: auto;
+    padding: 20px 10px 0;
+    border-top: 1px solid #e4e8ec;
+}
+
+.sidebar-username {
+    font-weight: 600;
+    font-size: 14px;
+    color: #38536f;
+    margin-bottom: 4px;
+    overflow-wrap: anywhere;
+}
+
+.sidebar-role {
+    font-size: 12px;
+    color: #8995a1;
+    margin-bottom: 15px;
+}
+
+.logout-button {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+    color: #68798a;
+    border: none;
+    background: transparent;
+    padding: 12px 14px;
+    border-radius: 7px;
+}
+
+.logout-button:hover {
+    background-color: #edf5f2;
+    color: #62a88f;
+}
+
 
 /* MAIN */
 
 .main-content {
     flex: 1;
+    min-width: 0;
     padding: 40px;
-
     overflow-x: hidden;
 }
 
@@ -92,9 +139,7 @@ body {
 
 .page-header h1 {
     margin-bottom: 7px;
-
     color: #38536f;
-
     font-size: 30px;
 }
 
@@ -106,6 +151,14 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
+}
+
+.page-header-with-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
 
@@ -113,35 +166,26 @@ body {
 
 .dashboard-cards {
     display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
+    grid-template-columns: repeat(3, 1fr);
     gap: 22px;
-
     margin-bottom: 30px;
 }
 
 .card {
     padding: 25px;
-
     background-color: #ffffff;
-
     border: 1px solid #e4e8ec;
     border-radius: 12px;
 }
 
 .card-title {
     margin-bottom: 15px;
-
     color: #7d8995;
-
     font-size: 14px;
 }
 
 .card-number {
     color: #38536f;
-
     font-size: 34px;
     font-weight: bold;
 }
@@ -158,9 +202,7 @@ body {
 .content-section {
     margin-bottom: 25px;
     padding: 25px;
-
     background-color: #ffffff;
-
     border: 1px solid #e4e8ec;
     border-radius: 12px;
 }
@@ -179,17 +221,14 @@ body {
 
 .button {
     display: inline-block;
-
     padding: 11px 18px;
-
     border: none;
     border-radius: 7px;
-
     cursor: pointer;
-
     text-decoration: none;
-
     font-size: 14px;
+    font-family: inherit;
+    transition: background-color 0.2s;
 }
 
 .primary-button {
@@ -210,14 +249,26 @@ body {
     background-color: #e1e5e8;
 }
 
+.delete-button {
+    background-color: #fbeaea;
+    color: #bd5555;
+}
+
+.delete-button:hover {
+    background-color: #f5dada;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 
 /* SEARCH */
 
 .search-container {
     display: flex;
-
     gap: 10px;
-
     margin-bottom: 22px;
 }
 
@@ -234,29 +285,29 @@ body {
 
 table {
     width: 100%;
-
     border-collapse: collapse;
 }
 
 th,
 td {
     padding: 14px 12px;
-
     text-align: left;
-
     border-bottom: 1px solid #edf0f2;
 }
 
 th {
     color: #687887;
-
     font-size: 13px;
 }
 
 td {
     color: #536575;
-
     font-size: 14px;
+}
+
+td .button {
+    margin-right: 6px;
+    margin-bottom: 4px;
 }
 
 
@@ -268,23 +319,18 @@ td {
 
 .form-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
+    grid-template-columns: repeat(2, 1fr);
     gap: 22px;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-
     gap: 8px;
 }
 
 .form-group label {
     color: #536575;
-
     font-size: 14px;
     font-weight: bold;
 }
@@ -292,32 +338,165 @@ td {
 input,
 select {
     padding: 11px 12px;
-
     border: 1px solid #d8dee4;
     border-radius: 7px;
-
     background-color: #ffffff;
-
     color: #455a6d;
-
     font-size: 14px;
+    font-family: inherit;
 }
 
 input:focus,
 select:focus {
     outline: none;
-
     border-color: #62a88f;
+}
+
+input:disabled,
+select:disabled {
+    background-color: #f1f3f5;
+    color: #8995a1;
+    cursor: not-allowed;
 }
 
 .form-actions {
     display: flex;
-
     justify-content: flex-end;
-
     gap: 12px;
-
     margin-top: 30px;
+}
+
+
+/* USER FORM */
+
+#userForm {
+    max-width: 650px;
+}
+
+#userForm .form-group {
+    margin-bottom: 22px;
+}
+
+#userForm input,
+#userForm select {
+    width: 100%;
+}
+
+#passwordHelp {
+    color: #8995a1;
+    font-size: 12px;
+}
+
+#formMessage {
+    min-height: 18px;
+    color: #c45858;
+    font-size: 13px;
+}
+
+
+/* LOGIN PAGE BODY */
+
+body:has(.login-page) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    background-color: #f6f8fa;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    background-color: #ffffff;
+    border: 1px solid #e4e8ec;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(56, 83, 111, 0.06);
+}
+
+.login-card h1 {
+    color: #38536f;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.login-card p {
+    color: #8995a1;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+.login-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.login-card .form-group {
+    width: 100%;
+}
+
+.login-card input {
+    width: 100%;
+}
+
+.login-card .primary-button {
+    width: 100%;
+    margin-top: 5px;
+}
+
+#loginMessage {
+    min-height: 18px;
+    color: #c45858;
+    font-size: 13px;
+}
+
+
+/* LOGIN BRAND */
+
+.login-brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+.login-logo {
+    display: block;
+    width: 100%;
+    max-width: 190px;
+    height: auto;
+    object-fit: contain;
+}
+
+
+/* LOGIN HEADER */
+
+.login-header {
+    margin-bottom: 25px;
+}
+
+.login-header h2 {
+    color: #38536f;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.login-header p {
+    color: #8995a1;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 0;
 }
 
 
@@ -325,9 +504,7 @@ select:focus {
 
 .empty-state {
     padding: 35px;
-
     text-align: center;
-
     color: #929da7;
 }
 
@@ -340,6 +517,10 @@ select:focus {
         width: 210px;
     }
 
+    .main-content {
+        padding: 25px;
+    }
+
     .dashboard-cards {
         grid-template-columns: 1fr;
     }
@@ -347,4 +528,83 @@ select:focus {
     .form-grid {
         grid-template-columns: 1fr;
     }
+}
+
+@media (max-width: 600px) {
+
+    body:not(:has(.login-page)) {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+    }
+
+    .sidebar-account {
+        margin-top: 20px;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .search-container {
+        flex-wrap: wrap;
+    }
+
+    .search-container input {
+        width: 100%;
+    }
+
+    .content-section {
+        padding: 18px;
+    }
+
+    .login-card {
+        padding: 28px;
+    }
+}
+
+/* LOGIN - FINAL LAYOUT */
+
+.login-card {
+    padding: 32px 40px;
+}
+
+.login-brand {
+    height: auto;
+    min-height: 0;
+    margin: 0 0 28px;
+    padding: 0;
+}
+
+.login-logo {
+    display: block;
+    width: 220px;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+}
+
+.login-header {
+    margin-bottom: 22px;
+}
+
+.login-card form {
+    gap: 16px;
+}
+
+#loginMessage:empty {
+    display: none;
+}
+
+.login-card .primary-button {
+    margin-top: 4px;
 }

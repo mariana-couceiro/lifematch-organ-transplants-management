@@ -7,34 +7,43 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+
+
 
 @Entity
+@Table(name = "candidate")
 public class Candidate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
+    @Column(name = "blood_type", nullable = false)
     private String bloodType;
 
+    @Column(name = "required_organ", nullable = false)
     private String requiredOrgan;
 
+    @Column(nullable = false)
     private String urgency;
 
+    @Column(nullable = false)
     private int priority;
 
+    @Column(name = "waiting_list_entry_date", nullable = false)
     private LocalDate waitingListEntryDate;
 
+    @Column(nullable = false)
     private String status;
 
-
-    // EMPTY CONSTRUCTOR
-    public Candidate() {
-    }
 
 
     // CONSTRUCTOR

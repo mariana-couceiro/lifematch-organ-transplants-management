@@ -9,20 +9,18 @@ import com.lifematch.model.OrganType;
 import com.lifematch.repository.CandidateRepository;
 import com.lifematch.repository.OrganTypeRepository;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
+
+@ApplicationScoped
 public class CandidateService {
 
-    private final CandidateRepository repository;
-    private final OrganTypeRepository organTypeRepository;
+    @Inject
+    private CandidateRepository repository;
 
-
-    public CandidateService() {
-
-        this.repository =
-                new CandidateRepository();
-
-        this.organTypeRepository =
-                new OrganTypeRepository();
-    }
+    @Inject
+    private OrganTypeRepository organTypeRepository;
 
 
     public Candidate createCandidate(

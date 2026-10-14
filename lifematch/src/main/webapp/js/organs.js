@@ -1,7 +1,44 @@
 const API_URL = "../api/organs";
+const AUTH_URL = "../api/auth/me";
 
 const tableBody =
     document.getElementById("organTableBody");
+
+let isAdmin = false;
+
+
+// INITIALIZE PAGE
+async function initializeOrgansPage() {
+
+    try {
+
+        const response = await fetch(AUTH_URL, {
+            credentials: "same-origin",
+            cache: "no-store"
+        });
+
+        if (response.status === 401) {
+            window.location.replace("../login.html");
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Could not verify session.");
+        }
+
+        const user = await response.json();
+
+        isAdmin = user.role === "ADMIN";
+
+        await loadOrgans();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage("Could not initialize organs page.");
+    }
+}
 
 
 // LOAD ORGANS
@@ -9,17 +46,25 @@ async function loadOrgans() {
 
     try {
 
-        const response =
-            await fetch(API_URL);
+        const response = await fetch(API_URL, {
+            credentials: "same-origin"
+        });
 
-        if (!response.ok) {
-            throw new Error(
-                "Could not load organs."
-            );
+        if (response.status === 401) {
+            window.location.replace("../login.html");
+            return;
         }
 
-        const organs =
-            await response.json();
+        if (response.status === 403) {
+            showMessage("Access denied.");
+            return;
+        }
+
+        if (!response.ok) {
+            throw new Error("Could not load organs.");
+        }
+
+        const organs = await response.json();
 
         displayOrgans(organs);
 
@@ -27,13 +72,7 @@ async function loadOrgans() {
 
         console.error(error);
 
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="8">
-                    Could not load organs.
-                </td>
-            </tr>
-        `;
+        showMessage("Could not load organs.");
     }
 }
 
@@ -44,47 +83,71 @@ function displayOrgans(organs) {
     tableBody.innerHTML = "";
 
     if (organs.length === 0) {
-
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="8">
-                    No organs found.
-                </td>
-            </tr>
-        `;
-
+        showMessage("No organs found.");
         return;
     }
 
     organs.forEach(organ => {
 
-        const row =
-            document.createElement("tr");
+        const row = document.createElement("tr");
 
-        row.innerHTML = `
-            <td>${organ.id}</td>
-            <td>${organ.type}</td>
-            <td>${organ.bloodType}</td>
-            <td>${organ.donorCode}</td>
-            <td>${organ.hospital}</td>
-            <td>${organ.availabilityDate}</td>
-            <td>${organ.status}</td>
+        const fields = [
+            organ.id,
+            organ.type,
+            organ.bloodType,
+            organ.donorCode,
+            organ.hospital,
+            organ.availabilityDate,
+            organ.status
+        ];
 
-            <td>
-                <a
-                    href="organ-form.html?id=${organ.id}"
-                    class="button secondary-button">
-                    Edit
-                </a>
+        fields.forEach(value => {
 
-                <button
-                    type="button"
-                    class="button delete-button"
-                    onclick="deleteOrgan(${organ.id})">
-                    Delete
-                </button>
-            </td>
-        `;
+            const cell = document.createElement("td");
+
+            cell.textContent = value ?? "";
+
+            row.appendChild(cell);
+        });
+
+        // ACTIONS
+        const actionsCell = document.createElement("td");
+
+        // EDIT - ADMIN AND USER
+        const editButton = document.createElement("a");
+
+        editButton.href =
+            `organ-form.html?id=${organ.id}`;
+
+        editButton.className =
+            "button secondary-button";
+
+        editButton.textContent = "Edit";
+
+        actionsCell.appendChild(editButton);
+
+        // DELETE - ADMIN ONLY
+        if (isAdmin) {
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.type = "button";
+
+            deleteButton.className =
+                "button delete-button";
+
+            deleteButton.textContent = "Delete";
+
+            deleteButton.addEventListener(
+                "click",
+                () => deleteOrgan(organ.id)
+            );
+
+            actionsCell.appendChild(deleteButton);
+        }
+
+        row.appendChild(actionsCell);
 
         tableBody.appendChild(row);
     });
@@ -94,10 +157,14 @@ function displayOrgans(organs) {
 // DELETE ORGAN
 async function deleteOrgan(id) {
 
-    const confirmed =
-        confirm(
-            "Are you sure you want to delete this organ?"
-        );
+    if (!isAdmin) {
+        alert("Administrator permissions required.");
+        return;
+    }
+
+    const confirmed = confirm(
+        "Are you sure you want to delete this organ?"
+    );
 
     if (!confirmed) {
         return;
@@ -105,21 +172,29 @@ async function deleteOrgan(id) {
 
     try {
 
-        const response =
-            await fetch(
-                `${API_URL}/${id}`,
-                {
-                    method: "DELETE"
-                }
-            );
+        const response = await fetch(
+            `${API_URL}/${id}`,
+            {
+                method: "DELETE",
+                credentials: "same-origin"
+            }
+        );
+
+        if (response.status === 401) {
+            window.location.replace("../login.html");
+            return;
+        }
+
+        if (response.status === 403) {
+            alert("Administrator permissions required.");
+            return;
+        }
 
         if (!response.ok) {
 
-            const message =
-                await response.text();
+            const message = await response.text();
 
-            alert(message);
-
+            alert(message || "Could not delete organ.");
             return;
         }
 
@@ -129,12 +204,26 @@ async function deleteOrgan(id) {
 
         console.error(error);
 
-        alert(
-            "Could not delete organ."
-        );
+        alert("Could not delete organ.");
     }
 }
 
 
-// LOAD WHEN PAGE OPENS
-loadOrgans();
+// DISPLAY MESSAGE
+function showMessage(message) {
+
+    tableBody.innerHTML = "";
+
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+
+    cell.colSpan = 8;
+    cell.textContent = message;
+
+    row.appendChild(cell);
+    tableBody.appendChild(row);
+}
+
+
+// INITIALIZE
+initializeOrgansPage();

@@ -1,0 +1,22 @@
+info:
+  name: teste users
+  type: http
+
+http:
+  method: POST
+  url: http://localhost:8080/lifematch/api/auth/login
+  body:
+    type: json
+    data: |-
+      {
+          "username": "maria",
+          "password": "maria123",
+          "role": "USER"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

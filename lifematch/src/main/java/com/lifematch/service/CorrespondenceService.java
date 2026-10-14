@@ -8,78 +8,113 @@ import java.util.List;
 
 import com.lifematch.dto.CandidateMatchResponse;
 import com.lifematch.dto.CorrespondenceResponse;
+import com.lifematch.dto.CorrespondenceSummaryResponse;
+
 import com.lifematch.model.Candidate;
 import com.lifematch.model.Correspondence;
 import com.lifematch.model.Organ;
+
 import com.lifematch.repository.CandidateRepository;
 import com.lifematch.repository.CorrespondenceRepository;
 import com.lifematch.repository.OrganRepository;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+
+@ApplicationScoped
 public class CorrespondenceService {
 
-        private final CandidateRepository candidateRepository;
-        private final OrganRepository organRepository;
-        private final CorrespondenceRepository correspondenceRepository;
+        @Inject
+        private CandidateRepository candidateRepository;
 
-        public CorrespondenceService() {
+        @Inject
+        private OrganRepository organRepository;
 
-                this.candidateRepository = new CandidateRepository();
+        @Inject
+        private CorrespondenceRepository correspondenceRepository;
 
-                this.organRepository = new OrganRepository();
-
-                this.correspondenceRepository = new CorrespondenceRepository();
-        }
-
-        // GET ALL CORRESPONDENCES
+        // GET ALL CORRESPONDENCES - FULL RESPONSE
 
         public List<CorrespondenceResponse> getAllCorrespondences() {
 
-                List<Correspondence> correspondences = correspondenceRepository.findAll();
-
                 List<CorrespondenceResponse> responses = new ArrayList<>();
 
-                for (Correspondence correspondence : correspondences) {
+                for (Correspondence correspondence : correspondenceRepository.findAll()) {
 
-                        responses.add(
-                                        toResponse(correspondence));
+                        responses.add(toResponse(correspondence));
                 }
 
                 return responses;
         }
 
-        // GET CORRESPONDENCES BY ORGAN
+        // GET CORRESPONDENCES BY ORGAN - FULL RESPONSE
 
         public List<CorrespondenceResponse> getCorrespondencesByOrganId(
                         int organId) {
 
-                List<Correspondence> correspondences = correspondenceRepository
-                                .findByOrganId(organId);
-
                 List<CorrespondenceResponse> responses = new ArrayList<>();
 
-                for (Correspondence correspondence : correspondences) {
+                for (Correspondence correspondence : correspondenceRepository.findByOrganId(organId)) {
 
-                        responses.add(
-                                        toResponse(correspondence));
+                        responses.add(toResponse(correspondence));
                 }
 
                 return responses;
         }
 
-        // GET CORRESPONDENCES BY CANDIDATE
+        // GET CORRESPONDENCES BY CANDIDATE - FULL RESPONSE
 
         public List<CorrespondenceResponse> getCorrespondencesByCandidateId(
                         int candidateId) {
 
-                List<Correspondence> correspondences = correspondenceRepository
-                                .findByCandidateId(candidateId);
-
                 List<CorrespondenceResponse> responses = new ArrayList<>();
 
-                for (Correspondence correspondence : correspondences) {
+                for (Correspondence correspondence : correspondenceRepository.findByCandidateId(candidateId)) {
 
-                        responses.add(
-                                        toResponse(correspondence));
+                        responses.add(toResponse(correspondence));
+                }
+
+                return responses;
+        }
+
+        // GET ALL CORRESPONDENCES - SUMMARY
+
+        public List<CorrespondenceSummaryResponse> getAllCorrespondenceSummaries() {
+
+                List<CorrespondenceSummaryResponse> responses = new ArrayList<>();
+
+                for (Correspondence correspondence : correspondenceRepository.findAll()) {
+
+                        responses.add(toSummaryResponse(correspondence));
+                }
+
+                return responses;
+        }
+
+        // GET CORRESPONDENCES BY ORGAN - SUMMARY
+
+        public List<CorrespondenceSummaryResponse> getCorrespondenceSummariesByOrganId(int organId) {
+
+                List<CorrespondenceSummaryResponse> responses = new ArrayList<>();
+
+                for (Correspondence correspondence : correspondenceRepository.findByOrganId(organId)) {
+
+                        responses.add(toSummaryResponse(correspondence));
+                }
+
+                return responses;
+        }
+
+        // GET CORRESPONDENCES BY CANDIDATE - SUMMARY
+
+        public List<CorrespondenceSummaryResponse> getCorrespondenceSummariesByCandidateId(int candidateId) {
+
+                List<CorrespondenceSummaryResponse> responses = new ArrayList<>();
+
+                for (Correspondence correspondence : correspondenceRepository.findByCandidateId(candidateId)) {
+
+                        responses.add(toSummaryResponse(correspondence));
                 }
 
                 return responses;
@@ -87,21 +122,15 @@ public class CorrespondenceService {
 
         // FIND ELIGIBLE CANDIDATES
 
-        public List<Candidate> findEligibleCandidates(
-                        int organId) {
+        public List<Candidate> findEligibleCandidates(int organId) {
 
-                Organ organ = organRepository.findById(
-                                organId);
+                Organ organ = organRepository.findById(organId);
 
                 if (organ == null) {
-
-                        throw new IllegalArgumentException(
-                                        "Organ not found.");
+                        throw new IllegalArgumentException("Organ not found.");
                 }
 
-                if (!"AVAILABLE".equals(
-                                organ.getStatus())) {
-
+                if (!"AVAILABLE".equals(organ.getStatus())) {
                         throw new IllegalArgumentException(
                                         "Organ is not available.");
                 }
@@ -111,22 +140,16 @@ public class CorrespondenceService {
                 for (Candidate candidate : candidateRepository.findAll()) {
 
                         boolean sameOrgan = candidate.getRequiredOrgan()
-                                        .equalsIgnoreCase(
-                                                        organ.getType());
+                                        .equalsIgnoreCase(organ.getType());
 
                         boolean sameBloodType = candidate.getBloodType()
-                                        .equals(
-                                                        organ.getBloodType());
+                                        .equals(organ.getBloodType());
 
                         boolean waiting = "WAITING".equals(
                                         candidate.getStatus());
 
-                        if (sameOrgan &&
-                                        sameBloodType &&
-                                        waiting) {
-
-                                eligibleCandidates.add(
-                                                candidate);
+                        if (sameOrgan && sameBloodType && waiting) {
+                                eligibleCandidates.add(candidate);
                         }
                 }
 
@@ -135,39 +158,32 @@ public class CorrespondenceService {
 
         // CALCULATE COMPATIBILITY SCORE
 
-        public int calculateCompatibilityScore(
-                        Candidate candidate) {
+        public int calculateCompatibilityScore(Candidate candidate) {
 
                 int priorityScore = candidate.getPriority() * 10;
 
                 int waitingScore = calculateWaitingMonths(
-                                candidate
-                                                .getWaitingListEntryDate());
+                                candidate.getWaitingListEntryDate());
 
-                return priorityScore +
-                                waitingScore;
+                return priorityScore + waitingScore;
         }
 
         // CALCULATE WAITING MONTHS
 
-        private int calculateWaitingMonths(
-                        LocalDate entryDate) {
+        private int calculateWaitingMonths(LocalDate entryDate) {
 
                 Period period = Period.between(
                                 entryDate,
                                 LocalDate.now());
 
-                return period.getYears() * 12
-                                + period.getMonths();
+                return period.getYears() * 12 + period.getMonths();
         }
 
         // GET RANKED CANDIDATES
 
-        public List<Candidate> getRankedCandidates(
-                        int organId) {
+        public List<Candidate> getRankedCandidates(int organId) {
 
-                List<Candidate> candidates = findEligibleCandidates(
-                                organId);
+                List<Candidate> candidates = findEligibleCandidates(organId);
 
                 candidates.sort(
                                 Comparator
@@ -182,11 +198,9 @@ public class CorrespondenceService {
 
         // GET RANKING RESPONSE
 
-        public List<CandidateMatchResponse> getRanking(
-                        int organId) {
+        public List<CandidateMatchResponse> getRanking(int organId) {
 
-                List<Candidate> candidates = getRankedCandidates(
-                                organId);
+                List<Candidate> candidates = getRankedCandidates(organId);
 
                 List<CandidateMatchResponse> ranking = new ArrayList<>();
 
@@ -199,11 +213,9 @@ public class CorrespondenceService {
                                         candidate.getId(),
                                         candidate.getName(),
                                         candidate.getPriority(),
-                                        calculateCompatibilityScore(
-                                                        candidate));
+                                        calculateCompatibilityScore(candidate));
 
                         ranking.add(response);
-
                         position++;
                 }
 
@@ -212,49 +224,37 @@ public class CorrespondenceService {
 
         // CREATE PROPOSAL
 
-        public CorrespondenceResponse createProposal(
-                        int organId) {
+        @Transactional
+        public CorrespondenceResponse createProposal(int organId) {
 
-                Organ organ = organRepository.findById(
-                                organId);
+                Organ organ = organRepository.findById(organId);
 
                 if (organ == null) {
-
-                        throw new IllegalArgumentException(
-                                        "Organ not found.");
+                        throw new IllegalArgumentException("Organ not found.");
                 }
 
-                if (!"AVAILABLE".equals(
-                                organ.getStatus())) {
-
+                if (!"AVAILABLE".equals(organ.getStatus())) {
                         throw new IllegalArgumentException(
                                         "Organ is not available.");
                 }
 
-                Correspondence existingPending = correspondenceRepository
-                                .findPendingByOrganId(
-                                                organId);
+                Correspondence existingPending = correspondenceRepository.findPendingByOrganId(
+                                organId);
 
                 if (existingPending != null) {
-
-                        return toResponse(
-                                        existingPending);
+                        return toResponse(existingPending);
                 }
 
-                List<Candidate> rankedCandidates = getRankedCandidates(
-                                organId);
+                List<Candidate> rankedCandidates = getRankedCandidates(organId);
 
                 for (Candidate candidate : rankedCandidates) {
 
                         if (wasCandidateCancelled(
-                                        candidate.getId(),
-                                        organId)) {
-
+                                        candidate.getId(), organId)) {
                                 continue;
                         }
 
-                        int score = calculateCompatibilityScore(
-                                        candidate);
+                        int score = calculateCompatibilityScore(candidate);
 
                         Correspondence correspondence = new Correspondence(
                                         candidate.getId(),
@@ -263,9 +263,7 @@ public class CorrespondenceService {
                                         LocalDate.now(),
                                         "PENDING");
 
-                        Correspondence saved = correspondenceRepository
-                                        .save(
-                                                        correspondence);
+                        Correspondence saved = correspondenceRepository.save(correspondence);
 
                         return toResponse(saved);
                 }
@@ -276,113 +274,98 @@ public class CorrespondenceService {
 
         // CONFIRM PROPOSAL
 
+        @Transactional
         public CorrespondenceResponse confirmProposal(
                         int correspondenceId) {
 
-                Correspondence correspondence = correspondenceRepository
-                                .findById(
-                                                correspondenceId);
+                Correspondence correspondence = correspondenceRepository.findById(correspondenceId);
 
                 if (correspondence == null) {
-
                         throw new IllegalArgumentException(
                                         "Correspondence not found.");
                 }
 
-                if (!"PENDING".equals(
-                                correspondence.getStatus())) {
-
+                if (!"PENDING".equals(correspondence.getStatus())) {
                         throw new IllegalArgumentException(
                                         "Only pending correspondences can be confirmed.");
                 }
 
                 Candidate candidate = candidateRepository.findById(
-                                correspondence
-                                                .getCandidateId());
+                                correspondence.getCandidateId());
 
                 Organ organ = organRepository.findById(
-                                correspondence
-                                                .getOrganId());
+                                correspondence.getOrganId());
 
                 if (candidate == null) {
-
                         throw new IllegalArgumentException(
                                         "Candidate not found.");
                 }
 
                 if (organ == null) {
-
                         throw new IllegalArgumentException(
                                         "Organ not found.");
                 }
 
-                correspondence.setStatus(
-                                "SELECTED");
+                // UPDATE CORRESPONDENCE
+                correspondence.setStatus("SELECTED");
+                correspondenceRepository.update(correspondence);
 
-                candidate.setStatus(
-                                "MATCHED");
+                // UPDATE CANDIDATE
+                candidate.setStatus("MATCHED");
+                candidateRepository.update(candidate.getId(), candidate);
 
-                organ.setStatus(
-                                "MATCHED");
+                // UPDATE ORGAN
+                organ.setStatus("MATCHED");
+                organRepository.update(organ.getId(), organ);
 
-                return toResponse(
-                                correspondence);
+                return toResponse(correspondence);
         }
 
         // CANCEL PROPOSAL
 
+        @Transactional
         public CorrespondenceResponse cancelProposal(
                         int correspondenceId,
                         String reason) {
 
-                Correspondence correspondence = correspondenceRepository
-                                .findById(
-                                                correspondenceId);
+                Correspondence correspondence = correspondenceRepository.findById(correspondenceId);
 
                 if (correspondence == null) {
-
                         throw new IllegalArgumentException(
                                         "Correspondence not found.");
                 }
 
-                if (!"PENDING".equals(
-                                correspondence.getStatus())) {
-
+                if (!"PENDING".equals(correspondence.getStatus())) {
                         throw new IllegalArgumentException(
                                         "Only pending correspondences can be cancelled.");
                 }
 
-                if (reason == null ||
-                                reason.isBlank()) {
-
+                if (reason == null || reason.isBlank()) {
                         throw new IllegalArgumentException(
                                         "Cancellation reason is required.");
                 }
 
-                correspondence.setStatus(
-                                "CANCELLED");
+                // UPDATE CORRESPONDENCE
+                correspondence.setStatus("CANCELLED");
+                correspondence.setCancellationReason(reason);
 
-                correspondence.setCancellationReason(
-                                reason);
+                // SAVE CHANGES IN MYSQL
+                Correspondence updated = correspondenceRepository.update(correspondence);
 
-                return toResponse(
-                                correspondence);
+                return toResponse(updated);
         }
 
         // CANCEL AND CREATE NEXT PROPOSAL
 
+        @Transactional
         public CorrespondenceResponse cancelAndCreateNext(
                         int correspondenceId,
                         String reason) {
 
-                CorrespondenceResponse cancelled = cancelProposal(
-                                correspondenceId,
-                                reason);
+                CorrespondenceResponse cancelled = cancelProposal(correspondenceId, reason);
 
                 try {
-
-                        return createProposal(
-                                        cancelled.organId());
+                        return createProposal(cancelled.organId());
 
                 } catch (IllegalArgumentException e) {
 
@@ -402,18 +385,13 @@ public class CorrespondenceService {
                         int candidateId,
                         int organId) {
 
-                List<Correspondence> correspondences = correspondenceRepository
-                                .findByOrganId(
-                                                organId);
+                List<Correspondence> correspondences = correspondenceRepository.findByOrganId(organId);
 
                 for (Correspondence correspondence : correspondences) {
 
-                        if (correspondence
-                                        .getCandidateId() == candidateId
-                                        &&
-                                        "CANCELLED".equals(
-                                                        correspondence
-                                                                        .getStatus())) {
+                        if (correspondence.getCandidateId() == candidateId
+                                        && "CANCELLED".equals(
+                                                        correspondence.getStatus())) {
 
                                 return true;
                         }
@@ -422,18 +400,16 @@ public class CorrespondenceService {
                 return false;
         }
 
-        // CONVERT TO RESPONSE
+        // CONVERT TO FULL RESPONSE
 
         private CorrespondenceResponse toResponse(
                         Correspondence correspondence) {
 
                 Candidate candidate = candidateRepository.findById(
-                                correspondence
-                                                .getCandidateId());
+                                correspondence.getCandidateId());
 
                 Organ organ = organRepository.findById(
-                                correspondence
-                                                .getOrganId());
+                                correspondence.getOrganId());
 
                 String candidateName = candidate != null
                                 ? candidate.getName()
@@ -449,12 +425,39 @@ public class CorrespondenceService {
                                 candidateName,
                                 correspondence.getOrganId(),
                                 organType,
-                                correspondence
-                                                .getCompatibilityScore(),
-                                correspondence
-                                                .getCorrespondenceDate(),
+                                correspondence.getCompatibilityScore(),
+                                correspondence.getCorrespondenceDate(),
                                 correspondence.getStatus(),
-                                correspondence
-                                                .getCancellationReason());
+                                correspondence.getCancellationReason());
+        }
+
+        // CONVERT TO SUMMARY RESPONSE
+
+        private CorrespondenceSummaryResponse toSummaryResponse(
+                        Correspondence correspondence) {
+
+                Candidate candidate = candidateRepository.findById(
+                                correspondence.getCandidateId());
+
+                Organ organ = organRepository.findById(
+                                correspondence.getOrganId());
+
+                String candidateName = candidate != null
+                                ? candidate.getName()
+                                : "Unknown Candidate";
+
+                String organType = organ != null
+                                ? organ.getType()
+                                : "Unknown Organ";
+
+                return new CorrespondenceSummaryResponse(
+                                correspondence.getId(),
+                                correspondence.getCandidateId(),
+                                candidateName,
+                                correspondence.getOrganId(),
+                                organType,
+                                correspondence.getCompatibilityScore(),
+                                correspondence.getCorrespondenceDate(),
+                                correspondence.getStatus());
         }
 }

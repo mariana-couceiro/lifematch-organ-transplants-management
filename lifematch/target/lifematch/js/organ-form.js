@@ -1,4 +1,5 @@
 const API_URL = "../api/organs";
+const ORGAN_TYPE_API_URL = "../api/organ-types";
 
 const form =
     document.getElementById("organForm");
@@ -8,6 +9,9 @@ const formTitle =
 
 const submitButton =
     form.querySelector('button[type="submit"]');
+
+const organTypeSelect =
+    document.getElementById("type");
 
 
 const params =
@@ -19,23 +23,109 @@ const organId =
     params.get("id");
 
 
-if (organId) {
+// INITIALIZE FORM
+async function initializeForm() {
 
-    formTitle.textContent =
-        "Edit Organ";
+    // First load the available organ types
+    const organTypesLoaded =
+        await loadOrganTypes();
 
-    submitButton.textContent =
-        "Save Changes";
+    if (!organTypesLoaded) {
+        return;
+    }
 
-    loadOrgan();
 
-} else {
+    if (organId) {
 
-    formTitle.textContent =
-        "New Organ";
+        formTitle.textContent =
+            "Edit Organ";
 
-    submitButton.textContent =
-        "Create Organ";
+        submitButton.textContent =
+            "Save Changes";
+
+        await loadOrgan();
+
+    } else {
+
+        formTitle.textContent =
+            "New Organ";
+
+        submitButton.textContent =
+            "Create Organ";
+    }
+}
+
+
+// LOAD ORGAN TYPES
+async function loadOrganTypes() {
+
+    try {
+
+        const response =
+            await fetch(
+                ORGAN_TYPE_API_URL
+            );
+
+
+        if (!response.ok) {
+
+            alert(
+                "Could not load organ types."
+            );
+
+            return false;
+        }
+
+
+        const organTypes =
+            await response.json();
+
+
+        organTypeSelect.innerHTML =
+            '<option value="">Select</option>';
+
+
+        const activeOrganTypes =
+            organTypes.filter(
+                organType =>
+                    organType.active
+            );
+
+
+        activeOrganTypes.forEach(
+            organType => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    organType.name;
+
+                option.textContent =
+                    organType.name;
+
+                organTypeSelect.appendChild(
+                    option
+                );
+            }
+        );
+
+
+        return true;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Could not load organ types."
+        );
+
+        return false;
+    }
 }
 
 
@@ -49,6 +139,7 @@ async function loadOrgan() {
                 `${API_URL}/${organId}/edit`
             );
 
+
         if (!response.ok) {
 
             alert(
@@ -60,6 +151,7 @@ async function loadOrgan() {
 
             return;
         }
+
 
         const organ =
             await response.json();
@@ -85,6 +177,7 @@ async function loadOrgan() {
 
         document.getElementById("status").value =
             organ.status;
+
 
     } catch (error) {
 
@@ -221,3 +314,7 @@ form.addEventListener(
         }
     }
 );
+
+
+// START
+initializeForm();

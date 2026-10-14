@@ -9,263 +9,219 @@ import com.lifematch.model.OrganType;
 import com.lifematch.repository.OrganRepository;
 import com.lifematch.repository.OrganTypeRepository;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+
+@ApplicationScoped
 public class OrganService {
 
-    private final OrganRepository repository;
-    private final OrganTypeRepository organTypeRepository;
+        @Inject
+        private OrganRepository repository;
 
+        @Inject
+        private OrganTypeRepository organTypeRepository;
 
-    public OrganService() {
+        // CREATE
+        @Transactional
+        public Organ createOrgan(Organ organ) {
 
-        this.repository =
-                new OrganRepository();
+                validateOrgan(organ);
 
-        this.organTypeRepository =
-                new OrganTypeRepository();
-    }
+                Organ savedOrgan = repository.save(organ);
 
+                String donorCode = String.format(
+                                "DNR-%04d",
+                                savedOrgan.getId());
 
-    // CREATE
-    public Organ createOrgan(Organ organ) {
+                savedOrgan.setDonorCode(donorCode);
 
-        validateOrgan(organ);
-
-        Organ savedOrgan =
-                repository.save(organ);
-
-        String donorCode =
-                String.format(
-                        "DNR-%04d",
-                        savedOrgan.getId()
-                );
-
-        savedOrgan.setDonorCode(donorCode);
-
-        return savedOrgan;
-    }
-
-
-    // GET ALL
-    public List<Organ> getAllOrgans() {
-
-        return repository.findAll();
-    }
-
-
-    // GET BY ID
-    public Organ getOrganById(int id) {
-
-        return repository.findById(id);
-    }
-
-
-    // UPDATE
-    public Organ updateOrgan(
-            int id,
-            Organ organ) {
-
-        Organ existingOrgan =
-                repository.findById(id);
-
-        if (existingOrgan == null) {
-            return null;
+                return savedOrgan;
         }
 
-        validateOrgan(organ);
+        // GET ALL
+        public List<Organ> getAllOrgans() {
 
-        return repository.update(
-                id,
-                organ
-        );
-    }
-
-
-    // DELETE
-    public boolean deleteOrgan(int id) {
-
-        return repository.delete(id);
-    }
-
-
-    // RESPONSE USED FOR EDITING
-    public OrganEditResponse toEditResponse(
-            Organ organ) {
-
-        return new OrganEditResponse(
-                organ.getId(),
-                organ.getType(),
-                organ.getBloodType(),
-                organ.getDonorName(),
-                organ.getDonorCode(),
-                organ.getDonorBirthDate(),
-                organ.getHospital(),
-                organ.getAvailabilityDate(),
-                organ.getStatus()
-        );
-    }
-
-
-    // VALIDATIONS
-    private void validateOrgan(
-            Organ organ) {
-
-        if (organ == null) {
-
-            throw new IllegalArgumentException(
-                    "Organ data is required."
-            );
+                return repository.findAll();
         }
 
+        // GET BY ID
+        public Organ getOrganById(int id) {
 
-        // ORGAN TYPE
-        if (organ.getType() == null ||
-            organ.getType().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Organ type is required."
-            );
+                return repository.findById(id);
         }
 
+        // UPDATE
+        public Organ updateOrgan(
+                        int id,
+                        Organ organ) {
 
-        if (!isValidOrganType(
-                organ.getType())) {
+                Organ existingOrgan = repository.findById(id);
 
-            throw new IllegalArgumentException(
-                    "Invalid organ type."
-            );
+                if (existingOrgan == null) {
+                        return null;
+                }
+
+                validateOrgan(organ);
+
+                return repository.update(
+                                id,
+                                organ);
         }
 
+        // DELETE
+        public boolean deleteOrgan(int id) {
 
-        // BLOOD TYPE
-        if (organ.getBloodType() == null ||
-            organ.getBloodType().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Blood type is required."
-            );
+                return repository.delete(id);
         }
 
+        // RESPONSE USED FOR EDITING
+        public OrganEditResponse toEditResponse(
+                        Organ organ) {
 
-        if (!isValidBloodType(
-                organ.getBloodType())) {
-
-            throw new IllegalArgumentException(
-                    "Invalid blood type."
-            );
+                return new OrganEditResponse(
+                                organ.getId(),
+                                organ.getType(),
+                                organ.getBloodType(),
+                                organ.getDonorName(),
+                                organ.getDonorCode(),
+                                organ.getDonorBirthDate(),
+                                organ.getHospital(),
+                                organ.getAvailabilityDate(),
+                                organ.getStatus());
         }
 
+        // VALIDATIONS
+        private void validateOrgan(
+                        Organ organ) {
 
-        // DONOR NAME
-        if (organ.getDonorName() == null ||
-            organ.getDonorName().isBlank()) {
+                if (organ == null) {
 
-            throw new IllegalArgumentException(
-                    "Donor name is required."
-            );
+                        throw new IllegalArgumentException(
+                                        "Organ data is required.");
+                }
+
+                // ORGAN TYPE
+                if (organ.getType() == null ||
+                                organ.getType().isBlank()) {
+
+                        throw new IllegalArgumentException(
+                                        "Organ type is required.");
+                }
+
+                if (!isValidOrganType(
+                                organ.getType())) {
+
+                        throw new IllegalArgumentException(
+                                        "Invalid organ type.");
+                }
+
+                // BLOOD TYPE
+                if (organ.getBloodType() == null ||
+                                organ.getBloodType().isBlank()) {
+
+                        throw new IllegalArgumentException(
+                                        "Blood type is required.");
+                }
+
+                if (!isValidBloodType(
+                                organ.getBloodType())) {
+
+                        throw new IllegalArgumentException(
+                                        "Invalid blood type.");
+                }
+
+                // DONOR NAME
+                if (organ.getDonorName() == null ||
+                                organ.getDonorName().isBlank()) {
+
+                        throw new IllegalArgumentException(
+                                        "Donor name is required.");
+                }
+
+                // DONOR BIRTH DATE
+                if (organ.getDonorBirthDate() == null) {
+
+                        throw new IllegalArgumentException(
+                                        "Donor birth date is required.");
+                }
+
+                if (organ.getDonorBirthDate()
+                                .isAfter(LocalDate.now())) {
+
+                        throw new IllegalArgumentException(
+                                        "Donor birth date cannot be in the future.");
+                }
+
+                // HOSPITAL
+                if (organ.getHospital() == null ||
+                                organ.getHospital().isBlank()) {
+
+                        throw new IllegalArgumentException(
+                                        "Hospital is required.");
+                }
+
+                // AVAILABILITY DATE
+                if (organ.getAvailabilityDate() == null) {
+
+                        throw new IllegalArgumentException(
+                                        "Availability date is required.");
+                }
+
+                if (organ.getAvailabilityDate()
+                                .isAfter(LocalDate.now())) {
+
+                        throw new IllegalArgumentException(
+                                        "Availability date cannot be in the future.");
+                }
+
+                // STATUS
+                if (organ.getStatus() == null ||
+                                organ.getStatus().isBlank()) {
+
+                        throw new IllegalArgumentException(
+                                        "Organ status is required.");
+                }
+
+                if (!isValidStatus(
+                                organ.getStatus())) {
+
+                        throw new IllegalArgumentException(
+                                        "Invalid organ status.");
+                }
         }
 
+        // VALID ORGAN TYPE
+        private boolean isValidOrganType(
+                        String type) {
 
-        // DONOR BIRTH DATE
-        if (organ.getDonorBirthDate() == null) {
+                OrganType organType = organTypeRepository.findByName(
+                                type);
 
-            throw new IllegalArgumentException(
-                    "Donor birth date is required."
-            );
+                return organType != null &&
+                                organType.isActive();
         }
 
+        // VALID BLOOD TYPES
+        private boolean isValidBloodType(
+                        String bloodType) {
 
-        if (organ.getDonorBirthDate()
-                .isAfter(LocalDate.now())) {
-
-            throw new IllegalArgumentException(
-                    "Donor birth date cannot be in the future."
-            );
+                return bloodType.equals("A+") ||
+                                bloodType.equals("A-") ||
+                                bloodType.equals("B+") ||
+                                bloodType.equals("B-") ||
+                                bloodType.equals("AB+") ||
+                                bloodType.equals("AB-") ||
+                                bloodType.equals("0+") ||
+                                bloodType.equals("0-");
         }
 
+        // VALID ORGAN STATUS
+        private boolean isValidStatus(
+                        String status) {
 
-        // HOSPITAL
-        if (organ.getHospital() == null ||
-            organ.getHospital().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Hospital is required."
-            );
+                return status.equalsIgnoreCase("AVAILABLE") ||
+                                status.equalsIgnoreCase("MATCHED") ||
+                                status.equalsIgnoreCase("INACTIVE");
         }
-
-
-        // AVAILABILITY DATE
-        if (organ.getAvailabilityDate() == null) {
-
-            throw new IllegalArgumentException(
-                    "Availability date is required."
-            );
-        }
-
-
-        if (organ.getAvailabilityDate()
-                .isAfter(LocalDate.now())) {
-
-            throw new IllegalArgumentException(
-                    "Availability date cannot be in the future."
-            );
-        }
-
-
-        // STATUS
-        if (organ.getStatus() == null ||
-            organ.getStatus().isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Organ status is required."
-            );
-        }
-
-
-        if (!isValidStatus(
-                organ.getStatus())) {
-
-            throw new IllegalArgumentException(
-                    "Invalid organ status."
-            );
-        }
-    }
-
-
-    // VALID ORGAN TYPE
-    private boolean isValidOrganType(
-            String type) {
-
-        OrganType organType =
-                organTypeRepository.findByName(
-                        type
-                );
-
-        return organType != null &&
-                organType.isActive();
-    }
-
-
-    // VALID BLOOD TYPES
-    private boolean isValidBloodType(
-            String bloodType) {
-
-        return bloodType.equals("A+") ||
-                bloodType.equals("A-") ||
-                bloodType.equals("B+") ||
-                bloodType.equals("B-") ||
-                bloodType.equals("AB+") ||
-                bloodType.equals("AB-") ||
-                bloodType.equals("0+") ||
-                bloodType.equals("0-");
-    }
-
-
-    // VALID ORGAN STATUS
-    private boolean isValidStatus(
-            String status) {
-
-        return status.equalsIgnoreCase("AVAILABLE") ||
-                status.equalsIgnoreCase("MATCHED") ||
-                status.equalsIgnoreCase("INACTIVE");
-    }
 }

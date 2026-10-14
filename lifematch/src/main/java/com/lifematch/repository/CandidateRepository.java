@@ -1,145 +1,108 @@
 package com.lifematch.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.lifematch.model.Candidate;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
+@ApplicationScoped
 public class CandidateRepository {
 
-    private static final List<Candidate> candidates =
-            new ArrayList<>();
+        @PersistenceContext(unitName = "LifeMatchPU")
+        private EntityManager entityManager;
 
-    private static int nextId = 1;
+        // CREATE
+        @Transactional
+        public Candidate save(Candidate candidate) {
 
-
-    public Candidate save(
-            Candidate candidate) {
-
-        candidate.setId(nextId++);
-
-        candidates.add(candidate);
-
-        return candidate;
-    }
-
-
-    public List<Candidate> findAll() {
-
-        return candidates;
-    }
-
-
-    public Candidate findById(
-            int id) {
-
-        for (Candidate candidate :
-                candidates) {
-
-            if (candidate.getId() == id) {
+                entityManager.persist(candidate);
 
                 return candidate;
-            }
         }
 
-        return null;
-    }
+        // GET ALL
+        public List<Candidate> findAll() {
 
-
-    public List<Candidate> findByName(
-            String name) {
-
-        List<Candidate> results =
-                new ArrayList<>();
-
-
-        for (Candidate candidate :
-                candidates) {
-
-            if (candidate
-                    .getName()
-                    .toLowerCase()
-                    .contains(
-                            name.toLowerCase()
-                    )) {
-
-                results.add(candidate);
-            }
+                return entityManager.createQuery(
+                                "SELECT c FROM Candidate c ORDER BY c.id",
+                                Candidate.class).getResultList();
         }
 
+        // GET BY ID
+        public Candidate findById(int id) {
 
-        return results;
-    }
-
-
-    public Candidate update(
-            int id,
-            Candidate updatedCandidate) {
-
-        Candidate existingCandidate =
-                findById(id);
-
-
-        if (existingCandidate == null) {
-
-            return null;
+                return entityManager.find(Candidate.class, id);
         }
 
+        // GET BY NAME
+        public List<Candidate> findByName(String name) {
 
-        existingCandidate.setName(
-                updatedCandidate.getName()
-        );
-
-        existingCandidate.setBirthDate(
-                updatedCandidate.getBirthDate()
-        );
-
-        existingCandidate.setBloodType(
-                updatedCandidate.getBloodType()
-        );
-
-        existingCandidate.setRequiredOrgan(
-                updatedCandidate.getRequiredOrgan()
-        );
-
-        existingCandidate.setUrgency(
-                updatedCandidate.getUrgency()
-        );
-
-        existingCandidate.setPriority(
-                updatedCandidate.getPriority()
-        );
-
-        existingCandidate.setWaitingListEntryDate(
-                updatedCandidate
-                        .getWaitingListEntryDate()
-        );
-
-        existingCandidate.setStatus(
-                updatedCandidate.getStatus()
-        );
-
-
-        return existingCandidate;
-    }
-
-
-    public boolean delete(
-            int id) {
-
-        Candidate candidate =
-                findById(id);
-
-
-        if (candidate == null) {
-
-            return false;
+                return entityManager.createQuery(
+                                "SELECT c FROM Candidate c " +
+                                                "WHERE LOWER(c.name) LIKE :name " +
+                                                "ORDER BY c.id",
+                                Candidate.class)
+                                .setParameter(
+                                                "name",
+                                                "%" + name.toLowerCase() + "%")
+                                .getResultList();
         }
 
+        // UPDATE
+        @Transactional
+        public Candidate update(
+                        int id,
+                        Candidate updatedCandidate) {
 
-        candidates.remove(candidate);
+                Candidate existingCandidate = entityManager.find(Candidate.class, id);
 
-        return true;
-    }
+                if (existingCandidate == null) {
+                        return null;
+                }
+
+                existingCandidate.setName(
+                                updatedCandidate.getName());
+
+                existingCandidate.setBirthDate(
+                                updatedCandidate.getBirthDate());
+
+                existingCandidate.setBloodType(
+                                updatedCandidate.getBloodType());
+
+                existingCandidate.setRequiredOrgan(
+                                updatedCandidate.getRequiredOrgan());
+
+                existingCandidate.setUrgency(
+                                updatedCandidate.getUrgency());
+
+                existingCandidate.setPriority(
+                                updatedCandidate.getPriority());
+
+                existingCandidate.setWaitingListEntryDate(
+                                updatedCandidate.getWaitingListEntryDate());
+
+                existingCandidate.setStatus(
+                                updatedCandidate.getStatus());
+
+                return existingCandidate;
+        }
+
+        // DELETE
+        @Transactional
+        public boolean delete(int id) {
+
+                Candidate candidate = entityManager.find(Candidate.class, id);
+
+                if (candidate == null) {
+                        return false;
+                }
+
+                entityManager.remove(candidate);
+
+                return true;
+        }
 }

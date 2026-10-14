@@ -1,24 +1,26 @@
 package com.lifematch.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.lifematch.model.OrganType;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class OrganTypeRepository {
 
-    private static final List<OrganType> organTypes =
-            new ArrayList<>();
-
-    private static int nextId = 1;
+    @PersistenceContext(unitName = "LifeMatchPU")
+    private EntityManager entityManager;
 
 
     // CREATE
+    @Transactional
     public OrganType save(OrganType organType) {
 
-        organType.setId(nextId++);
-
-        organTypes.add(organType);
+        entityManager.persist(organType);
 
         return organType;
     }
@@ -27,55 +29,48 @@ public class OrganTypeRepository {
     // GET ALL
     public List<OrganType> findAll() {
 
-        return organTypes;
+        return entityManager.createQuery(
+                "SELECT o FROM OrganType o ORDER BY o.name",
+                OrganType.class
+        ).getResultList();
     }
 
 
     // GET BY ID
     public OrganType findById(int id) {
 
-        for (OrganType organType : organTypes) {
-
-            if (organType.getId() == id) {
-
-                return organType;
-            }
-        }
-
-        return null;
+        return entityManager.find(OrganType.class, id);
     }
 
 
     // GET BY NAME
     public OrganType findByName(String name) {
 
-        for (OrganType organType : organTypes) {
+        List<OrganType> results =
+                entityManager.createQuery(
+                        "SELECT o FROM OrganType o " +
+                        "WHERE LOWER(o.name) = LOWER(:name)",
+                        OrganType.class
+                )
+                .setParameter("name", name)
+                .getResultList();
 
-            if (organType.getName()
-                    .equalsIgnoreCase(name)) {
-
-                return organType;
-            }
-        }
-
-        return null;
+        return results.isEmpty() ? null : results.get(0);
     }
 
 
     // UPDATE
+    @Transactional
     public OrganType update(
             int id,
             OrganType updatedOrganType) {
 
         OrganType existingOrganType =
-                findById(id);
-
+                entityManager.find(OrganType.class, id);
 
         if (existingOrganType == null) {
-
             return null;
         }
-
 
         existingOrganType.setName(
                 updatedOrganType.getName()
@@ -89,26 +84,24 @@ public class OrganTypeRepository {
                 updatedOrganType.isActive()
         );
 
-
         return existingOrganType;
     }
 
 
     // DELETE
+    @Transactional
     public boolean delete(int id) {
 
         OrganType organType =
-                findById(id);
-
+                entityManager.find(OrganType.class, id);
 
         if (organType == null) {
-
             return false;
         }
 
-
-        organTypes.remove(organType);
+        entityManager.remove(organType);
 
         return true;
     }
 }
+

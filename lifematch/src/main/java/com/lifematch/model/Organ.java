@@ -7,22 +7,39 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+
 @Entity
+@Table(name = "organ")
 public class Organ {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false)
     private String type;
+
+    @Column(name = "blood_type", nullable = false)
     private String bloodType;
 
+    @Column(name = "donor_name")
     private String donorName;
+
+    @Column(name = "donor_code")
     private String donorCode;
+
+    @Column(name = "donor_birth_date")
     private LocalDate donorBirthDate;
 
+    @Column
     private String hospital;
+
+    @Column(name = "availability_date")
     private LocalDate availabilityDate;
+
+    @Column(nullable = false)
     private String status;
 
     public Organ() {

@@ -7,19 +7,36 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+
+
 @Entity
+@Table(name = "correspondence")
 public class Correspondence {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "candidate_id", nullable = false)
     private int candidateId;
+
+    @Column(name = "organ_id", nullable = false)
     private int organId;
+
+    @Column(name = "compatibility_score", nullable = false)
     private int compatibilityScore;
+
+    @Column(name = "correspondence_date", nullable = false)
     private LocalDate correspondenceDate;
+
+    @Column(nullable = false)
     private String status;
+
+    @Column(name = "cancellation_reason")
     private String cancellationReason;
+
 
     public Correspondence() {
     }

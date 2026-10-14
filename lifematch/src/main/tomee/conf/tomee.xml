@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<tomee>
+
+    <Resource id="jdbc/LifeMatchDS"
+                type="DataSource">
+
+        JdbcDriver com.mysql.cj.jdbc.Driver
+        JdbcUrl jdbc:mysql://localhost:3306/lifematch
+        UserName lifematch_app
+        JtaManaged true
+
+    </Resource>
+
+</tomee>

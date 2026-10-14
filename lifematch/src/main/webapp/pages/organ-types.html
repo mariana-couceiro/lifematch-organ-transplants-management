@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>LifeMatch | Organ Types</title>
+
+    <link rel="stylesheet"
+          href="../css/style.css">
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main-content">
+
+        <header class="page-header page-header-with-action">
+
+            <div>
+
+                <h1>
+                    Organ Types
+                </h1>
+
+                <p>
+                    Manage the organ types available in LifeMatch
+                </p>
+
+            </div>
+
+            <a href="organ-type-form.html"
+                class="button primary-button">
+                New Organ Type
+            </a>
+
+        </header>
+
+        <section class="content-section">
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Priority Points</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="organTypesTableBody">
+
+                        <tr>
+
+                            <td colspan="5"
+                                class="empty-state">
+                                No organ types found.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="../js/organ-types.js"></script>
+
+</body>
+
+</html>

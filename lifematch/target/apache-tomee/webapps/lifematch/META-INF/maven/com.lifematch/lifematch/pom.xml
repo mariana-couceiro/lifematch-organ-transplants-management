@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+            https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -33,6 +33,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- BCrypt Password Hashing -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
         <!-- Tests -->
         <dependency>
             <groupId>junit</groupId>
@@ -40,6 +47,13 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- MySQL JDBC Driver -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <version>9.5.0</version>
+    </dependency>
 
     </dependencies>
 
@@ -100,6 +114,7 @@
 
         <plugins>
 
+            
             <!-- TomEE -->
             <plugin>
                 <groupId>org.apache.tomee.maven</groupId>
@@ -109,9 +124,21 @@
                 <configuration>
                     <tomeeVersion>10.1.1</tomeeVersion>
                     <tomeeClassifier>plus</tomeeClassifier>
-                </configuration>
 
+                    <!-- Copy the TomEE configuration files -->
+                    <config>${project.basedir}/src/main/tomee/conf</config>
+
+                    <!-- MySQL JDBC driver for the TomEE server -->
+                    <libs>
+                        <lib>com.mysql:mysql-connector-j:9.5.0</lib>
+                    </libs>
+
+                    <systemVariables>
+                        <lifematch.db.password>${env.LIFEMATCH_DB_PASSWORD}</lifematch.db.password>
+                    </systemVariables>
+                </configuration>
             </plugin>
+
 
         </plugins>
 

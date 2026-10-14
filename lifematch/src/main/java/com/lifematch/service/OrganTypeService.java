@@ -5,14 +5,14 @@ import java.util.List;
 import com.lifematch.model.OrganType;
 import com.lifematch.repository.OrganTypeRepository;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
+@ApplicationScoped
 public class OrganTypeService {
 
-    private final OrganTypeRepository repository;
-
-    public OrganTypeService() {
-        this.repository =
-                new OrganTypeRepository();
-    }
+    @Inject
+    private OrganTypeRepository repository;
 
 
     // CREATE
@@ -65,7 +65,6 @@ public class OrganTypeService {
 
         validateOrganType(organType);
 
-
         // Check if another organ type
         // already uses this name
         OrganType sameName =
@@ -80,7 +79,6 @@ public class OrganTypeService {
                     "Organ type already exists."
             );
         }
-
 
         return repository.update(
                 id,
@@ -107,7 +105,6 @@ public class OrganTypeService {
             );
         }
 
-
         // NAME
         if (organType.getName() == null ||
             organType.getName().isBlank()) {
@@ -116,7 +113,6 @@ public class OrganTypeService {
                     "Organ type name is required."
             );
         }
-
 
         // PRIORITY POINTS
         if (organType.getPriorityPoints() < 0 ||
@@ -128,3 +124,4 @@ public class OrganTypeService {
         }
     }
 }
+

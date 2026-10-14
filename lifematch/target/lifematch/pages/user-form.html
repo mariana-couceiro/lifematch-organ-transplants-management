@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+    <title>LifeMatch | User Form</title>
+
+    <link rel="stylesheet"
+            href="../css/style.css">
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+
+            <div>
+                <h1 id="formTitle">New User</h1>
+                <p id="formDescription">
+                    Create a new system user
+                </p>
+            </div>
+
+        </header>
+
+        <section class="content-section">
+
+            <form id="userForm">
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <small id="passwordHelp">
+                        Enter a password for the new user.
+                    </small>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="role">
+                        Role
+                    </label>
+
+                    <select
+                        id="role"
+                        name="role"
+                        required
+                    >
+
+                        <option value="">
+                            Select a role
+                        </option>
+
+                        <option value="USER">
+                            USER
+                        </option>
+
+                        <option value="ADMIN">
+                            ADMIN
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <p id="formMessage"
+                    role="alert"
+                    aria-live="polite"></p>
+
+                <div class="form-actions">
+
+                    <a href="users.html"
+                        class="button secondary-button">
+                        Cancel
+                    </a>
+
+                    <button
+                        type="submit"
+                        id="saveUserButton"
+                        class="button primary-button">
+                        Save User
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <script src="../js/navigation.js"></script>
+    <script src="../js/user-form.js"></script>
+
+</body>
+
+</html>

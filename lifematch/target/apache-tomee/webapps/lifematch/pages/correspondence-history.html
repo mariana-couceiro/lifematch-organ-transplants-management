@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+            content="width=device-width, initial-scale=1.0">
+
+    <title>LifeMatch | Correspondence History</title>
+
+    <link rel="stylesheet"
+            href="../css/style.css">
+</head>
+
+<body>
+
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <main class="main-content">
+
+        <header class="page-header">
+
+            <h1>Correspondence History</h1>
+
+            <p>
+                View previous candidate and organ matching decisions
+            </p>
+
+        </header>
+
+
+        <section class="content-section">
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Candidate</th>
+                            <th>Organ</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Cancellation Reason</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="historyTableBody">
+
+                        <tr>
+
+                            <td colspan="7"
+                                class="empty-state">
+                                No correspondence history found.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="../js/navigation.js"></script>
+    <script src="../js/correspondence-history.js"></script>
+
+</body>
+
+</html>
