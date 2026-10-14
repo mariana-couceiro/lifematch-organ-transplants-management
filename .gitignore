@@ -22,3 +22,10 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Configurações locais da base de dados
+lifematch/lifematch-db.properties
+lifematch/src/main/tomee/conf/system.properties
+
+# macOS
+.DS_Store
