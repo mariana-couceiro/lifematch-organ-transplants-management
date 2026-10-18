@@ -133,10 +133,11 @@ userForm.addEventListener("submit", async function (event) {
         return;
     }
 
-    if (!isEditing && !password) {
+    if (!isEditing && !password.trim()) {
         showMessage("Password is required.");
+        passwordInput.focus();
         return;
-    }
+}
 
     if (!role) {
         showMessage("Please select a role.");

@@ -140,6 +140,23 @@ loginForm.addEventListener("submit", async function (event) {
 });
 
 
+// HANDLE ENTER KEY
+[usernameInput, passwordInput].forEach(input => {
+
+    input.addEventListener("keydown", function(event) {
+
+        if (event.key === "Enter" && !event.isComposing) {
+
+            event.preventDefault();
+
+            if (!isSubmitting) {
+                loginForm.requestSubmit();
+            }
+        }
+    });
+});
+
+
+
 // INITIALIZE
 checkExistingSession();
-
